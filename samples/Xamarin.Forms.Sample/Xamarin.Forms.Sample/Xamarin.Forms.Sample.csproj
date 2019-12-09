@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.2.0.709249" />  
-    <PackageReference Include="Xamarin.Essentials" Version="1.2.0" />
+    <PackageReference Include="Weavy.WebView.Plugin.Forms" Version="1.0.1" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.991221" />  
+    <PackageReference Include="Xamarin.Essentials" Version="1.2.0" />  
+    <PackageReference Include="Xamarin.Forms.GoogleMaps" Version="3.3.0" />
   </ItemGroup>
 </Project>

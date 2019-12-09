@@ -1,4 +1,4 @@
-<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
+﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
 
   <PropertyGroup>
     <!--Work around so the conditions work below-->
@@ -11,13 +11,13 @@
     -->
     <AssemblyName>Weavy.WebView.Plugin.Forms</AssemblyName>
     <RootNamespace>Weavy.WebView.Plugin.Forms</RootNamespace>
-    <PackageId>Plugin.Weavy.WebView.Plugin.Forms</PackageId>
+    <PackageId>Weavy.WebView.Plugin.Forms</PackageId>
     
-    <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
-    <Version>1.0.0.0</Version>
-    <PackageVersion>1.0.0.0</PackageVersion>
+    <Product>Weavy.WebView.Plugin.Forms</Product>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <AssemblyFileVersion>1.0.1.0</AssemblyFileVersion>
+    <Version>1.0.1.0</Version>
+    <PackageVersion>1.0.1.0</PackageVersion>
     <PackOnBuild>true</PackOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <LangVersion>default</LangVersion>
@@ -31,20 +31,22 @@
     
     <!--TODO: Fill these in-->
     <PackageLicenseUrl>LINK TO LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>LINK TO PROJECT</PackageProjectUrl>
-    <RepositoryUrl>LINK TO PROJECT</RepositoryUrl>
+    <PackageProjectUrl>https://weavy.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Weavy/weavy-webview</RepositoryUrl>
     <PackageReleaseNotes>RELEASE NOTES</PackageReleaseNotes>
     <PackageIconUrl>ICON URL</PackageIconUrl>
-    <PackageTags>xamarin, windows, ios, android, xamarin.forms, plugin, Weavy.WebView.Plugin.Forms</PackageTags>
+    <PackageTags>xamarin, windows, ios, android, xamarin.forms, plugin, Weavy</PackageTags>
     
     <Title>Weavy.WebView.Plugin.Forms Plugin for Xamarin and Windows</Title>
     <Summary>Summary of nuget</Summary>
-    <Description>Plugin Description</Description>
+    <Description>Weavy Plugin Description</Description>
     
     
     <Owners>YOU</Owners>
-    <Authors>YOU</Authors>
-    <Copyright>Copyright 2018</Copyright>
+    <Authors>Weavy</Authors>
+    <Copyright>Copyright 2019</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>WeavyWeavy</Company>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">

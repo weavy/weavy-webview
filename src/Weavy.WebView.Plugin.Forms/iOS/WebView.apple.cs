@@ -21,6 +21,12 @@ namespace Weavy.WebView.Plugin.Forms.iOS
 
         WKUserContentController userController;
 
+        #region private methods
+
+        /// <summary>
+        /// When element changes
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnElementChanged(ElementChangedEventArgs<WeavyWebView> e)
         {
             base.OnElementChanged(e);
@@ -60,13 +66,6 @@ namespace Weavy.WebView.Plugin.Forms.iOS
             }
         }
 
-        public void DidReceiveScriptMessage(WKUserContentController userContentController, WKScriptMessage message)
-        {
-            if (Element == null) return;
-
-            Element.MessageReceived(message.Body.ToString());
-        }
-
         /// <summary>
         /// A property has changed
         /// </summary>
@@ -81,6 +80,45 @@ namespace Weavy.WebView.Plugin.Forms.iOS
                 Control.LoadRequest(new NSUrlRequest(new NSUrl(new Uri(Element.Uri).AbsoluteUri)));
             }
         }
+
+
+        /// <summary>
+        /// Generates the script to inject into the web view
+        /// </summary>
+        /// <returns></returns>
+        private string GetFuncScript()
+        {
+            var builder = new StringBuilder();
+            builder.Append("NativeFuncs = [];");
+            builder.Append("function NativeFunc(action, data, callback){");
+
+            builder.Append("  var callbackIdx = NativeFuncs.push(callback) - 1;");
+            builder.Append(NativeFuncCall);
+            builder.Append("(JSON.stringify({ a: action, d: data, c: callbackIdx }));}");
+            builder.Append(" if (typeof(window.NativeFuncsReady) !== 'undefined') { ");
+            builder.Append("   window.NativeFuncsReady(); ");
+            builder.Append(" } ");
+
+            return builder.ToString();
+        }
+
+        #endregion
+
+        #region public methods
+
+        /// <summary>
+        /// A script message is received from the web view
+        /// </summary>
+        /// <param name="userContentController"></param>
+        /// <param name="message"></param>
+        public void DidReceiveScriptMessage(WKUserContentController userContentController, WKScriptMessage message)
+        {
+            if (Element == null) return;
+
+            Element.MessageReceived(message.Body.ToString());
+        }
+
+        
 
         /// <summary>
         /// Called when navigation is complete in the webview
@@ -125,24 +163,7 @@ namespace Weavy.WebView.Plugin.Forms.iOS
             }));
         }
 
-        /// <summary>
-        /// Generates the script to inject into the web view
-        /// </summary>
-        /// <returns></returns>
-        private string GetFuncScript()
-        {
-            var builder = new StringBuilder();
-            builder.Append("NativeFuncs = [];");
-            builder.Append("function NativeFunc(action, data, callback){");
+        #endregion
 
-            builder.Append("  var callbackIdx = NativeFuncs.push(callback) - 1;");
-            builder.Append(NativeFuncCall);
-            builder.Append("(JSON.stringify({ a: action, d: data, c: callbackIdx }));}");
-            builder.Append(" if (typeof(window.NativeFuncsReady) !== 'undefined') { ");
-            builder.Append("   window.NativeFuncsReady(); ");
-            builder.Append(" } ");
-
-            return builder.ToString();
-        }
     }
 }

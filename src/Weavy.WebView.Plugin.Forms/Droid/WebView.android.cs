@@ -1,7 +1,6 @@
 ﻿using Android.Content;
 using Android.Webkit;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Weavy.WebView.Plugin.Forms;
 using Weavy.WebView.Plugin.Forms.Droid;
@@ -11,17 +10,23 @@ using Xamarin.Forms.Platform.Android;
 [assembly: ExportRenderer(typeof(WeavyWebView), typeof(WeavyWebViewRenderer))]
 namespace Weavy.WebView.Plugin.Forms.Droid
 {
+    /// <summary>
+    /// Droid implementation of the weavy web view
+    /// </summary>
     public class WeavyWebViewRenderer : ViewRenderer<WeavyWebView, Android.Webkit.WebView>
     {
-        public static Func<WeavyWebViewRenderer, WeavyWebViewClient> GetWebViewClientDelegate;
         private const string NativeFuncCall = "jsBridge.call";
         private const string NativeFunction = "function Native(action, data){jsBridge.call(JSON.stringify({ a: action, d: data }));}";
         Context _context;
 
+        public static Func<WeavyWebViewRenderer, WeavyWebViewClient> GetWebViewClientDelegate;
+        
         public WeavyWebViewRenderer(Context context) : base(context)
         {
             _context = context;
         }
+
+        #region protected methods
 
         protected override void OnElementChanged(ElementChangedEventArgs<WeavyWebView> e)
         {
@@ -83,6 +88,9 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             return d != null ? d(this) : new WeavyWebViewClient(this);
         }
 
+        #endregion
+
+        #region public methods
         /// <summary>
         /// On loading
         /// </summary>
@@ -120,11 +128,15 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             hybridWebView.CanGoForward = Control.CanGoForward();
         }
 
+        #endregion
+        
+        #region private methods
+
         /// <summary>
         /// Inject script to the page
         /// </summary>
         /// <param name="script">the script to execute</param>
-        void InjectJS(string script)
+        private void InjectJS(string script)
         {
             if (Control != null)
             {
@@ -147,5 +159,7 @@ namespace Weavy.WebView.Plugin.Forms.Droid
 
             return builder.ToString();
         }
+
+        #endregion
     }
 }

@@ -1,17 +1,12 @@
-﻿using Android.Content;
-using Android.Graphics;
+﻿using Android.Graphics;
 using Android.Webkit;
-using Java.Interop;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Weavy.WebView.Plugin.Forms;
-using Weavy.WebView.Plugin.Forms.Droid;
-using Xamarin.Forms;
-using Xamarin.Forms.Platform.Android;
 
 namespace Weavy.WebView.Plugin.Forms.Droid
 {
+    /// <summary>
+    /// Custom web view client implementation
+    /// </summary>
     public class WeavyWebViewClient : WebViewClient
     {
         private const string INTERNET_DISCONNECTED = "net::ERR_INTERNET_DISCONNECTED";
@@ -21,7 +16,6 @@ namespace Weavy.WebView.Plugin.Forms.Droid
         public WeavyWebViewClient(WeavyWebViewRenderer webHybrid)
         {
             this.WebHybrid = new WeakReference<WeavyWebViewRenderer>(webHybrid);
-
         }
 
         /// <summary>
@@ -70,7 +64,6 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             WeavyWebViewRenderer hybrid;
             if (this.WebHybrid != null && this.WebHybrid.TryGetTarget(out hybrid))
             {
-
                 if (!error.Description.Equals(INTERNET_DISCONNECTED) && !error.Description.Equals(CONNECTION_ABORTED))
                 {
                     hybrid.OnError(error.ErrorCode, error.Description);

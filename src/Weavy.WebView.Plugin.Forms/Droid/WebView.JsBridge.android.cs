@@ -1,28 +1,30 @@
-﻿using Android.Content;
-using Android.Graphics;
-using Android.Webkit;
+﻿using Android.Webkit;
 using Java.Interop;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Weavy.WebView.Plugin.Forms;
-using Weavy.WebView.Plugin.Forms.Droid;
-using Xamarin.Forms;
-using Xamarin.Forms.Platform.Android;
 
 namespace Weavy.WebView.Plugin.Forms.Droid
 {
-    
 
+    /// <summary>
+    /// Js Bridge
+    /// </summary>
     public class JSBridge : Java.Lang.Object
     {
         readonly WeakReference<WeavyWebViewRenderer> hybridWebViewRenderer;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="hybridRenderer"></param>
         public JSBridge(WeavyWebViewRenderer hybridRenderer)
         {
             hybridWebViewRenderer = new WeakReference<WeavyWebViewRenderer>(hybridRenderer);
         }
 
+        /// <summary>
+        /// Message receiver
+        /// </summary>
+        /// <param name="data"></param>
         [JavascriptInterface]
         [Export("call")]
         public void Call(string data)

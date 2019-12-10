@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Weavy.WebView.Plugin.Forms.Models
 {
+    /// <summary>
+    /// Badge event args
+    /// </summary>
     public class BadgeEventArgs : EventArgs
     {
         public int Number { get; set; }
-
     }
 
+    /// <summary>
+    /// Message object for JS bridge
+    /// </summary>
     public class Message
     {
         /// <summary>

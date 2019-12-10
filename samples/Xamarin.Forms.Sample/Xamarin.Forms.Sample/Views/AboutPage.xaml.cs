@@ -13,6 +13,7 @@ namespace Xamarin.Forms.Sample.Views
         public AboutPage()
         {
             InitializeComponent();
+
         }
     }
 }

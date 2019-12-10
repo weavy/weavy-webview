@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -45,6 +45,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
+    <Reference Include="Mono.Android.Export" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -87,10 +88,14 @@
     <AndroidResource Include="Resources\drawable\xamarin_logo.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Weavy.WebView.Plugin.Forms\Weavy.WebView.Plugin.Forms.csproj">
+      <Project>{1bb9955e-c372-4466-8077-b05d29edaa63}</Project>
+      <Name>Weavy.WebView.Plugin.Forms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xamarin.Forms.Sample\Xamarin.Forms.Sample.csproj">
       <Project>{D0F53EEB-A2F5-45E2-86DD-E5574478C225}</Project>
       <Name>Xamarin.Forms.Sample</Name>
     </ProjectReference>
   </ItemGroup>
- <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

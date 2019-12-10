@@ -134,6 +134,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Weavy.WebView.Plugin.Forms\Weavy.WebView.Plugin.Forms.csproj">
+      <Project>{1bb9955e-c372-4466-8077-b05d29edaa63}</Project>
+      <Name>Weavy.WebView.Plugin.Forms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xamarin.Forms.Sample\Xamarin.Forms.Sample.csproj">
       <Project>{D0F53EEB-A2F5-45E2-86DD-E5574478C225}</Project>
       <Name>Xamarin.Forms.Sample</Name>

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Weavy.WebView.Plugin.Forms.Helpers
+﻿namespace Weavy.WebView.Plugin.Forms.Helpers
 {
+    /// <summary>
+    /// Client script helper
+    /// </summary>
     public static class ScriptHelper
     {
         public static string SignInTokenScript(string token) => $@"

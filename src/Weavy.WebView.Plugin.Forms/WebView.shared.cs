@@ -11,6 +11,8 @@ namespace Weavy.WebView.Plugin.Forms
 {
     public class WeavyWebView : View
     {
+        #region event handlers
+
         public EventHandler LoadFinished;
         public EventHandler Loading;
         public EventHandler LoadError;
@@ -19,10 +21,19 @@ namespace Weavy.WebView.Plugin.Forms
         internal event EventHandler GoBackRequested;
         internal event EventHandler GoForwardRequested;
 
+        #endregion
+
+        #region private props
+
         private readonly object injectLock = new object();
         private readonly Dictionary<string, Action<string>> registeredActions;
         private readonly Dictionary<string, Func<string, object[]>> registeredFunctions;
         private readonly JsonSerializer jsonSerializer;
+
+        #endregion
+
+
+        #region bindable props
 
         public static readonly BindableProperty UriProperty = BindableProperty.Create(
           propertyName: "Uri",
@@ -42,6 +53,8 @@ namespace Weavy.WebView.Plugin.Forms
           declaringType: typeof(WeavyWebView),
           defaultValue: default(bool));
 
+        #endregion
+
         public WeavyWebView()
         {
             VerticalOptions = LayoutOptions.FillAndExpand;
@@ -52,6 +65,8 @@ namespace Weavy.WebView.Plugin.Forms
 
             RegisterCallbacks();
         }
+
+        #region public props
 
         public string Uri
         {
@@ -71,6 +86,10 @@ namespace Weavy.WebView.Plugin.Forms
             set { SetValue(CanGoForwardProperty, value); }
         }
 
+        #endregion
+        
+        #region public methods
+
         public void GoBack()
         {
             var handler = this.GoBackRequested;
@@ -86,45 +105,6 @@ namespace Weavy.WebView.Plugin.Forms
             if (handler != null)
             {
                 handler(this, null);
-            }
-        }
-
-        internal void OnLoadFinished(object sender, EventArgs e)
-        {
-
-            InjectJavaScript(ScriptHelper.ScriptChecker);
-
-            var handler = this.LoadFinished;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        internal void OnLoading(object sender, EventArgs e)
-        {
-            var handler = this.Loading;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        internal void OnLoadError(object sender, EventArgs e)
-        {
-            var handler = this.LoadError;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        internal void OnBadgeUpdate(object sender, BadgeEventArgs e)
-        {
-            var handler = this.BadgeUpdate;
-            if (handler != null)
-            {
-                handler(this, e);
             }
         }
 
@@ -198,6 +178,49 @@ namespace Weavy.WebView.Plugin.Forms
             InjectJavaScript(builder.ToString());
         }
 
+        #endregion
+
+        #region private methods
+
+        internal void OnLoadFinished(object sender, EventArgs e)
+        {
+
+            InjectJavaScript(ScriptHelper.ScriptChecker);
+
+            var handler = this.LoadFinished;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        internal void OnLoading(object sender, EventArgs e)
+        {
+            var handler = this.Loading;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        internal void OnLoadError(object sender, EventArgs e)
+        {
+            var handler = this.LoadError;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        internal void OnBadgeUpdate(object sender, BadgeEventArgs e)
+        {
+            var handler = this.BadgeUpdate;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
         internal bool TryGetAction(string name, out Action<string> action)
         {
             return this.registeredActions.TryGetValue(name, out action);
@@ -240,5 +263,8 @@ namespace Weavy.WebView.Plugin.Forms
                 OnBadgeUpdate(this, new BadgeEventArgs() { Number = badge });
             });
         }
+
+        #endregion
+               
     }
 }

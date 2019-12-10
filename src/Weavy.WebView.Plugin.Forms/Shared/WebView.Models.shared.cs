@@ -7,7 +7,16 @@ namespace Weavy.WebView.Plugin.Forms.Models
     /// </summary>
     public class BadgeEventArgs : EventArgs
     {
-        public int Number { get; set; }
+        public int Conversations { get; set; }
+        public int Notifications { get; set; }
+    }
+
+    /// <summary>
+    /// Sign in/out event args
+    /// </summary>
+    public class AuthenticationEventArgs : EventArgs
+    {
+        public string Status { get; set; }
     }
 
     /// <summary>

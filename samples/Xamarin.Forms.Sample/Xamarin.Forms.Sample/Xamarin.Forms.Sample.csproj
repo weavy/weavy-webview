@@ -14,4 +14,13 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Weavy.WebView.Plugin.Forms\Weavy.WebView.Plugin.Forms.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\MessengerPage.xaml.cs">
+      <DependentUpon>MessengerPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SpacesPage.xaml.cs">
+      <DependentUpon>SpacesPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

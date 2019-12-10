@@ -29,6 +29,28 @@
                 <views:AboutPage />
             </x:Arguments>
         </NavigationPage>
+
+        <NavigationPage Title="Spaces">
+            <NavigationPage.Icon>
+                <OnPlatform x:TypeArguments="FileImageSource">
+                    <On Platform="iOS" Value="tab_about.png"/>
+                </OnPlatform>
+            </NavigationPage.Icon>
+            <x:Arguments>
+                <views:SpacesPage />
+            </x:Arguments>
+        </NavigationPage>
+        
+        <NavigationPage Title="Messenger">
+            <NavigationPage.Icon>
+                <OnPlatform x:TypeArguments="FileImageSource">
+                    <On Platform="iOS" Value="tab_about.png"/>
+                </OnPlatform>
+            </NavigationPage.Icon>
+            <x:Arguments>
+                <views:MessengerPage />
+            </x:Arguments>
+        </NavigationPage>
     </TabbedPage.Children>
     
 </TabbedPage>

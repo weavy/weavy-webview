@@ -16,7 +16,8 @@ namespace Weavy.WebView.Plugin.Forms
         public EventHandler LoadFinished;
         public EventHandler Loading;
         public EventHandler LoadError;
-        public EventHandler<BadgeEventArgs> BadgeUpdate;
+        public EventHandler<BadgeEventArgs> BadgeUpdated;
+        public EventHandler<AuthenticationEventArgs> SignInCompleted;
         public EventHandler<string> JavaScriptLoadRequested;
         internal event EventHandler GoBackRequested;
         internal event EventHandler GoForwardRequested;
@@ -37,6 +38,12 @@ namespace Weavy.WebView.Plugin.Forms
 
         public static readonly BindableProperty UriProperty = BindableProperty.Create(
           propertyName: "Uri",
+          returnType: typeof(string),
+          declaringType: typeof(WeavyWebView),
+          defaultValue: default(string));
+
+        public static readonly BindableProperty AuthenticationTokenProperty = BindableProperty.Create(
+          propertyName: "AuthenticationToken",
           returnType: typeof(string),
           declaringType: typeof(WeavyWebView),
           defaultValue: default(string));
@@ -75,6 +82,12 @@ namespace Weavy.WebView.Plugin.Forms
         {
             get { return (string)GetValue(UriProperty); }
             set { SetValue(UriProperty, value); }
+        }
+
+        public string AuthenticationToken
+        {
+            get { return (string)GetValue(AuthenticationTokenProperty); }
+            set { SetValue(AuthenticationTokenProperty, value); }
         }
 
         public bool CanGoBack
@@ -217,7 +230,16 @@ namespace Weavy.WebView.Plugin.Forms
 
         internal void OnBadgeUpdate(object sender, BadgeEventArgs e)
         {
-            var handler = this.BadgeUpdate;
+            var handler = this.BadgeUpdated;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        internal void OnSignInCompleted(object sender, AuthenticationEventArgs e)
+        {
+            var handler = this.SignInCompleted;
             if (handler != null)
             {
                 handler(this, e);
@@ -242,7 +264,18 @@ namespace Weavy.WebView.Plugin.Forms
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     InjectJavaScript(ScriptHelper.Scripts);
+
+                    if (!string.IsNullOrEmpty(AuthenticationToken))
+                    {
+                        InjectJavaScript(ScriptHelper.SignInTokenScript(AuthenticationToken));
+                        AuthenticationToken = "";
+                    }
                 });
+            });
+
+            RegisterCallback("signInCompleteCallback", (status) =>
+            {
+                OnSignInCompleted(this, new AuthenticationEventArgs() { Status = status});
             });
 
             // callback for theming
@@ -262,8 +295,8 @@ namespace Weavy.WebView.Plugin.Forms
             RegisterCallback("badgeCallback", (args) =>
             {
                 //notify about badge update
-                var badge = int.Parse(args);
-                OnBadgeUpdate(this, new BadgeEventArgs() { Number = badge });
+                var badgeArgs = JsonConvert.DeserializeObject<BadgeEventArgs>(args);
+                OnBadgeUpdate(this, badgeArgs);
             });
         }
 

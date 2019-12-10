@@ -16,14 +16,14 @@ try{{
             data: JSON.stringify({{jwt: '{token}'}}),
             type: 'POST'
         }}).then(function(response){{
-            Native('signInCompleteCallback', {{status: 1}});            
+            Native('signInTokenCompleteCallback', {{status: 1}});            
             location.reload();            
         }}).fail(function(e){{
-            Native('signInCompleteCallback', {{status: 2, message: e.responseText}});            
+            Native('signInTokenCompleteCallback', {{status: 2, message: e.responseText}});            
         }});  
 }} catch(e){{
 
-Native('signInCompleteCallback', {{status: 3, message: e.responseText}});            
+Native('signInTokenCompleteCallback', {{status: 3, message: e.responseText}});            
 
 }}
 ";

@@ -273,7 +273,8 @@ namespace Weavy.WebView.Plugin.Forms
                 });
             });
 
-            RegisterCallback("signInCompleteCallback", (args) =>
+            // callback when signing in with token
+            RegisterCallback("signInTokenCompleteCallback", (args) =>
             {
                 var authArgs = JsonConvert.DeserializeObject<AuthenticationEventArgs>(args);
                 OnSignInCompleted(this, authArgs);

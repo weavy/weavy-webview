@@ -57,12 +57,15 @@ namespace Weavy.WebView.Plugin.Forms
 
         public WeavyWebView()
         {
+            // make sure the web view fills its container
             VerticalOptions = LayoutOptions.FillAndExpand;
             HorizontalOptions = LayoutOptions.FillAndExpand;
 
+            // setup dictionaries for registered actions and functions
             registeredActions = new Dictionary<string, Action<string>>();
             registeredFunctions = new Dictionary<string, Func<string, object[]>>();
 
+            // register all script callbacks that should be handled
             RegisterCallbacks();
         }
 
@@ -243,22 +246,22 @@ namespace Weavy.WebView.Plugin.Forms
             });
 
             // callback for theming
-            RegisterCallback("themeCallback", (color) =>
-            {
-                //var themeColor = CrossSettings.Current.Get<string>("themecolor");
-                var themeColor = "#000";
+            //RegisterCallback("themeCallback", (color) =>
+            //{
+            //    //var themeColor = CrossSettings.Current.Get<string>("themecolor");
+            //    var themeColor = "#000";
 
-                // update theme color if different
-                if (color != themeColor)
-                {
-                    //SetThemeColor(color);
-                }
-            });
+            //    // update theme color if different
+            //    if (color != themeColor)
+            //    {
+            //        //SetThemeColor(color);
+            //    }
+            //});
 
-            //Callback for badge change
+            //Callback for badge update
             RegisterCallback("badgeCallback", (args) =>
             {
-                //Set badge
+                //notify about badge update
                 var badge = int.Parse(args);
                 OnBadgeUpdate(this, new BadgeEventArgs() { Number = badge });
             });

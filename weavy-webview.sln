@@ -7,9 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Forms.Sample.Androi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Forms.Sample.iOS", "samples\Xamarin.Forms.Sample\Xamarin.Forms.Sample.iOS\Xamarin.Forms.Sample.iOS.csproj", "{4650075B-090C-46B5-97E7-84334E037892}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Forms.Sample", "samples\Xamarin.Forms.Sample\Xamarin.Forms.Sample\Xamarin.Forms.Sample.csproj", "{ED0C0C44-A608-4564-B726-CA4B94CC74D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Forms.Sample", "samples\Xamarin.Forms.Sample\Xamarin.Forms.Sample\Xamarin.Forms.Sample.csproj", "{ED0C0C44-A608-4564-B726-CA4B94CC74D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weavy.WebView.Plugin.Forms", "src\Weavy.WebView.Plugin.Forms\Weavy.WebView.Plugin.Forms.csproj", "{1BB9955E-C372-4466-8077-B05D29EDAA63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Weavy.WebView.Plugin.Forms", "src\Weavy.WebView.Plugin.Forms\Weavy.WebView.Plugin.Forms.csproj", "{1BB9955E-C372-4466-8077-B05D29EDAA63}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0BE1322E-DFDB-4137-A71A-499CB3EF6DDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B2B05070-EC14-4828-924F-0357CFB2135A} = {0BE1322E-DFDB-4137-A71A-499CB3EF6DDD}
+		{4650075B-090C-46B5-97E7-84334E037892} = {0BE1322E-DFDB-4137-A71A-499CB3EF6DDD}
+		{ED0C0C44-A608-4564-B726-CA4B94CC74D9} = {0BE1322E-DFDB-4137-A71A-499CB3EF6DDD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B258BECF-44C5-4A0D-A47D-F761EA0150C0}

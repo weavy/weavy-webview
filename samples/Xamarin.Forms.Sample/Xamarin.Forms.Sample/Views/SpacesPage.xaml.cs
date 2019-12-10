@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace Xamarin.Forms.Sample.Views
 {
@@ -13,8 +11,7 @@ namespace Xamarin.Forms.Sample.Views
         public SpacesPage()
         {
             InitializeComponent();
-
-
+            
             weavyWebView.AuthenticationToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTk5IiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJtYWdudXNAd2VhdnkuY29tIiwidXNlcm5hbWUiOiJta3JvbmEiLCJleHAiOiIxNTM0ODIwMjExMDAwIiwiaXNzIjoiTW9iaWxlVGVzdEFwcCJ9.3qU8CRXfLLvzdzhaj35mmJhQzBBkusAUWV1xKLEaG-I";
 
             weavyWebView.BadgeUpdated += (sender, args) =>
@@ -25,7 +22,8 @@ namespace Xamarin.Forms.Sample.Views
 
             weavyWebView.SignInCompleted += (sender, args) =>
             {
-                Console.WriteLine(args.Status);
+                var status = args.Status;                
+                Console.WriteLine("Authentication status = ", args.Status);
             };
         }
     }

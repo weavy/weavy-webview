@@ -16,7 +16,18 @@ namespace Weavy.WebView.Plugin.Forms.Models
     /// </summary>
     public class AuthenticationEventArgs : EventArgs
     {
-        public string Status { get; set; }
+        public AuthenticationStatus Status { get; set; }
+        public string Message { get; set; }
+    }
+
+    /// <summary>
+    /// Authentication status enum
+    /// </summary>
+    public enum AuthenticationStatus
+    {
+        OK = 1, 
+        NOTAUTHENTICATED = 2, 
+        ERROR = 3
     }
 
     /// <summary>

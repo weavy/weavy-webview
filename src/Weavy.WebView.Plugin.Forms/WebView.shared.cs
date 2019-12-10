@@ -273,9 +273,10 @@ namespace Weavy.WebView.Plugin.Forms
                 });
             });
 
-            RegisterCallback("signInCompleteCallback", (status) =>
+            RegisterCallback("signInCompleteCallback", (args) =>
             {
-                OnSignInCompleted(this, new AuthenticationEventArgs() { Status = status});
+                var authArgs = JsonConvert.DeserializeObject<AuthenticationEventArgs>(args);
+                OnSignInCompleted(this, authArgs);
             });
 
             // callback for theming

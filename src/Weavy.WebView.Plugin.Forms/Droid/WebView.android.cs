@@ -33,14 +33,15 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             base.OnElementChanged(e);
 
             if (Control == null)
-            {
+            {                
                 var webView = new Android.Webkit.WebView(_context);
                 webView.Settings.JavaScriptEnabled = true;
                 webView.Settings.DomStorageEnabled = true;
                 webView.LayoutParameters = new Android.Widget.LinearLayout.LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent);
                 webView.Settings.SetRenderPriority(WebSettings.RenderPriority.High);
                 webView.SetWebViewClient(GetWebViewClient());
-                //webView.SetWebChromeClient(new FileChooserWebChromeClient(Context as MainActivity));
+                //webView.SetWebChromeClient(new FileChooserWebChromeClient(Context as MainActivity));                
+                CookieManager.Instance.SetAcceptThirdPartyCookies(webView, true);
                 SetNativeControl(webView);
             }
 

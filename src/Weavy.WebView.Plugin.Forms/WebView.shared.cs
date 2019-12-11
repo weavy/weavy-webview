@@ -89,6 +89,7 @@ namespace Weavy.WebView.Plugin.Forms
         /// <summary>
         /// A JWT token that will be passed along to Weavy. 
         /// A valid JWT token enables the SSO authentication flow and the user will be signed in automatically.
+        /// For more information on how to setup, goto https://docs.weavy.com/sdk/server/authentication/external#the-json-web-token-(jwt)
         /// </summary>
         public string AuthenticationToken
         {

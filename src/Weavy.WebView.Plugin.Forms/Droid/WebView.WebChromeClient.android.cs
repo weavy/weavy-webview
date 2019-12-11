@@ -1,17 +1,14 @@
 ﻿using Android.App;
 using Android.Content;
-using Android.Graphics;
 using Android.Runtime;
 using Android.Webkit;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Xamarin.Forms.Platform.Android;
 
 namespace Weavy.WebView.Plugin.Forms.Droid
 {
     /// <summary>
-    /// Custom web view client implementation
+    /// Custom web chrome client implementation
     /// </summary>
     public class WeavyWebChromeClient : WebChromeClient
     {

@@ -32,10 +32,9 @@ namespace Weavy.WebView.Plugin.Forms
         private readonly JsonSerializer jsonSerializer;
 
         #endregion
-
-
+        
         #region bindable props
-
+                
         public static readonly BindableProperty UriProperty = BindableProperty.Create(
           propertyName: "Uri",
           returnType: typeof(string),
@@ -78,24 +77,37 @@ namespace Weavy.WebView.Plugin.Forms
 
         #region public props
 
+        /// <summary>
+        /// The uri to the Weavy page that should be displayed in the Weavy Web View
+        /// </summary>
         public string Uri
         {
             get { return (string)GetValue(UriProperty); }
             set { SetValue(UriProperty, value); }
         }
 
+        /// <summary>
+        /// A JWT token that will be passed along to Weavy. 
+        /// A valid JWT token enables the SSO authentication flow and the user will be signed in automatically.
+        /// </summary>
         public string AuthenticationToken
         {
             get { return (string)GetValue(AuthenticationTokenProperty); }
             set { SetValue(AuthenticationTokenProperty, value); }
         }
 
+        /// <summary>
+        /// True if you can go back in the Weavy Web View
+        /// </summary>
         public bool CanGoBack
         {
             get { return (bool)GetValue(CanGoBackProperty); }
             set { SetValue(CanGoBackProperty, value); }
         }
 
+        /// <summary>
+        /// True if you can go forward in the Weavy Web View
+        /// </summary>
         public bool CanGoForward
         {
             get { return (bool)GetValue(CanGoForwardProperty); }
@@ -103,9 +115,12 @@ namespace Weavy.WebView.Plugin.Forms
         }
 
         #endregion
-        
+
         #region public methods
 
+        /// <summary>
+        /// Go back in the Weavy Web View. You can check <see cref="CanGoBack"/> if it's possible to go back.
+        /// </summary>
         public void GoBack()
         {
             var handler = this.GoBackRequested;
@@ -115,6 +130,9 @@ namespace Weavy.WebView.Plugin.Forms
             }
         }
 
+        /// <summary>
+        /// Go forward in the Weavy Web View. You can check <see cref="CanGoForward"/> if it's possible to go forward.
+        /// </summary>
         public void GoForward()
         {
             var handler = this.GoForwardRequested;
@@ -124,6 +142,10 @@ namespace Weavy.WebView.Plugin.Forms
             }
         }
 
+        /// <summary>
+        /// Inject a script snippet into the Weavy Web View that will be executed.
+        /// </summary>
+        /// <param name="script"></param>
         public void InjectJavaScript(string script)
         {
             lock (injectLock)
@@ -132,12 +154,17 @@ namespace Weavy.WebView.Plugin.Forms
             }
         }
 
+        /// <summary>
+        /// Register a callback methods that will be run when called from javascript. Use Native('[nameofcallback]', data) when adding script through <see cref="InjectJavaScript(string)"/>.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="callback"></param>
         public void RegisterCallback(string name, Action<string> callback)
         {
             registeredActions.Add(name, callback);
         }
 
-        public void RegisterNativeFunction(string name, Func<string, object[]> func)
+        private void RegisterNativeFunction(string name, Func<string, object[]> func)
         {
             this.registeredFunctions.Add(name, func);
         }
@@ -196,7 +223,7 @@ namespace Weavy.WebView.Plugin.Forms
 
         #endregion
 
-        #region private methods
+        #region private and internal methods
 
         internal void OnLoadFinished(object sender, EventArgs e)
         {

@@ -18,6 +18,10 @@ namespace Weavy.WebView.Plugin.Forms.Droid
         private const string NativeFuncCall = "jsBridge.call";
         private const string NativeFunction = "function Native(action, data){jsBridge.call(JSON.stringify({ a: action, d: data }));}";
         Context _context;
+        WebViewClient _webViewClient;
+        WeavyWebChromeClient _webChromeClient;
+        protected internal WeavyWebView ElementController => Element;
+        bool _isDisposed = false;
 
         public static Func<WeavyWebViewRenderer, WeavyWebViewClient> GetWebViewClientDelegate;
         
@@ -39,8 +43,14 @@ namespace Weavy.WebView.Plugin.Forms.Droid
                 webView.Settings.DomStorageEnabled = true;
                 webView.LayoutParameters = new Android.Widget.LinearLayout.LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent);
                 webView.Settings.SetRenderPriority(WebSettings.RenderPriority.High);
-                webView.SetWebViewClient(GetWebViewClient());
-                //webView.SetWebChromeClient(new FileChooserWebChromeClient(Context as MainActivity));                
+
+                _webViewClient = GetWebViewClient();
+                webView.SetWebViewClient(_webViewClient);
+                
+                _webChromeClient = new WeavyWebChromeClient();
+                _webChromeClient.SetContext(Context);
+                webView.SetWebChromeClient(_webChromeClient);
+
                 CookieManager.Instance.SetAcceptThirdPartyCookies(webView, true);
                 SetNativeControl(webView);
             }
@@ -54,28 +64,68 @@ namespace Weavy.WebView.Plugin.Forms.Droid
 
             if (e.NewElement != null)
             {
+                var newElementController = e.NewElement as WeavyWebView;
+
                 Control.AddJavascriptInterface(new JSBridge(this), "jsBridge");
                 Control.LoadUrl(Element.Uri);
 
                 // handle javascript injection requests
-                e.NewElement.JavaScriptLoadRequested += (sender, script) => {
-                    InjectJS(script);
-                };
+                newElementController.JavaScriptLoadRequested += OnJavaScriptLoadRequested;
 
                 // handle go back requests
-                e.NewElement.GoBackRequested += (sender, args) => {
-                    if (!Control.CanGoBack()) return;
-
-                    Control.GoBack();
-                };
+                newElementController.GoBackRequested += OnGoBackRequested;
 
                 // handle go formward requests
-                e.NewElement.GoForwardRequested += (sender, args) => {
-                    if (!Control.CanGoForward()) return;
-
-                    Control.GoForward();
-                };
+                newElementController.GoForwardRequested += OnGoForwardRequested;
             }
+        }
+
+        void OnJavaScriptLoadRequested(object sender, string script)
+        {
+            InjectJS(script);
+        }
+
+        void OnGoBackRequested(object sender, EventArgs args)
+        {
+            if (!Control.CanGoBack()) return;
+
+            Control.GoBack();
+
+            UpdateCanGoBackForward();
+        }
+
+        void OnGoForwardRequested(object sender, EventArgs args)
+        {
+            if (!Control.CanGoForward()) return;
+
+            Control.GoForward();
+
+            UpdateCanGoBackForward();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+                return;
+
+            _isDisposed = true;
+            if (disposing)
+            {
+                if (Element != null)
+                {
+                    Control?.StopLoading();
+
+                    ElementController.JavaScriptLoadRequested -= OnJavaScriptLoadRequested;                    
+                    ElementController.GoBackRequested -= OnGoBackRequested;
+                    ElementController.GoForwardRequested -= OnGoForwardRequested;
+                    //ElementController.ReloadRequested -= OnReloadRequested;
+                    
+                    _webViewClient?.Dispose();
+                    _webChromeClient?.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
         }
 
         /// <summary>
@@ -87,6 +137,14 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             var d = GetWebViewClientDelegate;
 
             return d != null ? d(this) : new WeavyWebViewClient(this);
+        }
+
+        protected internal void UpdateCanGoBackForward()
+        {
+            if (Element == null || Control == null)
+                return;
+            ElementController.CanGoBack = Control.CanGoBack();
+            ElementController.CanGoForward = Control.CanGoForward();
         }
 
         #endregion

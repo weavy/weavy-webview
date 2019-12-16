@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Weavy.WebView.Plugin.Forms.Models
 {
@@ -18,6 +20,17 @@ namespace Weavy.WebView.Plugin.Forms.Models
     {
         public AuthenticationStatus Status { get; set; }
         public string Message { get; set; }
+    }
+
+    /// <summary>
+    /// Theming event args
+    /// </summary>
+    public class ThemingEventArgs : EventArgs
+    {
+        public string Name { get; set; }
+        public string Color { get; set; }
+        public string Icon { get; set; }
+        public IEnumerable<string> Colors { get; set; }
     }
 
     /// <summary>

@@ -27,18 +27,7 @@ Native('signInTokenCompleteCallback', {{status: 3, message: e.responseText}});
 
 }}
 ";
-
-        public static string ScriptChecker = @"
-/********************************************/
-/* Check if script already injected (Droid) */
-/********************************************/
-
-if(typeof weavyAppScripts === 'undefined') {
-    Native('injectScriptCallback', true);
-}
-
-";
-
+        
         public static string ReconnectScript = @"
 /********************************************/
 /* Reconnect to weavy rtm or reload page      */
@@ -118,18 +107,10 @@ if(typeof weavyAppScripts === 'undefined') {
     /********************************************/
     weavyAppScripts.theme = (function(){    
         function set(){
-            var color = '#A15C08';
-                
             $.ajax('/a/theme').then(function(response){
-                var colors = response.colors;
-                var color = response.theme_color;
-                if(!color && colors.length && colors.length > 7) {
-                    color = colors[7];
-                }
-                   
-                Native('themeCallback', color);
+                Native('themeCallback', response);
             }).fail(function(e){
-                Native('themeCallback', color);
+                Native('themeCallback', {});
             });
         }
 

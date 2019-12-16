@@ -17,7 +17,9 @@ namespace Weavy.WebView.Plugin.Forms
         public EventHandler Loading;
         public EventHandler LoadError;
         public EventHandler<BadgeEventArgs> BadgeUpdated;
-        public EventHandler<AuthenticationEventArgs> SignInCompleted;
+        public EventHandler<AuthenticationEventArgs> SignedIn;
+        public EventHandler<AuthenticationEventArgs> SignedOut;
+        public EventHandler<ThemingEventArgs> Theming;
         public EventHandler<string> JavaScriptLoadRequested;
         internal event EventHandler GoBackRequested;
         internal event EventHandler GoForwardRequested;
@@ -228,8 +230,15 @@ namespace Weavy.WebView.Plugin.Forms
 
         internal void OnLoadFinished(object sender, EventArgs e)
         {
+            // inject the scripts 
+            InjectJavaScript(ScriptHelper.Scripts);
 
-            InjectJavaScript(ScriptHelper.ScriptChecker);
+            // sso if token is set
+            if (!string.IsNullOrEmpty(AuthenticationToken))
+            {
+                InjectJavaScript(ScriptHelper.SignInTokenScript(AuthenticationToken));
+                AuthenticationToken = "";
+            }
 
             var handler = this.LoadFinished;
             if (handler != null)
@@ -265,9 +274,27 @@ namespace Weavy.WebView.Plugin.Forms
             }
         }
 
-        internal void OnSignInCompleted(object sender, AuthenticationEventArgs e)
+        internal void OnSignedIn(object sender, AuthenticationEventArgs e)
         {
-            var handler = this.SignInCompleted;
+            var handler = this.SignedIn;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        internal void OnSignedOut(object sender, AuthenticationEventArgs e)
+        {
+            var handler = this.SignedOut;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        internal void OnTheming(object sender, ThemingEventArgs e)
+        {
+            var handler = this.Theming;
             if (handler != null)
             {
                 handler(this, e);
@@ -285,41 +312,26 @@ namespace Weavy.WebView.Plugin.Forms
         }
 
         private void RegisterCallbacks()
-        {
-            // Callback for injecting base script
-            RegisterCallback("injectScriptCallback", (userGuid) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    InjectJavaScript(ScriptHelper.Scripts);
-
-                    if (!string.IsNullOrEmpty(AuthenticationToken))
-                    {
-                        InjectJavaScript(ScriptHelper.SignInTokenScript(AuthenticationToken));
-                        AuthenticationToken = "";
-                    }
-                });
-            });
-
+        {            
             // callback when signing in with token
             RegisterCallback("signInTokenCompleteCallback", (args) =>
             {
                 var authArgs = JsonConvert.DeserializeObject<AuthenticationEventArgs>(args);
-                OnSignInCompleted(this, authArgs);
+                OnSignedIn(this, authArgs);
             });
 
-            // callback for theming
-            //RegisterCallback("themeCallback", (color) =>
-            //{
-            //    //var themeColor = CrossSettings.Current.Get<string>("themecolor");
-            //    var themeColor = "#000";
 
-            //    // update theme color if different
-            //    if (color != themeColor)
-            //    {
-            //        //SetThemeColor(color);
-            //    }
-            //});
+            //Callback from sign out script
+            RegisterCallback("signOutCallback", (args) => {
+                OnSignedOut(this, new AuthenticationEventArgs() { Status = AuthenticationStatus.NOTAUTHENTICATED, Message = "Signed out completed" });
+            });
+
+
+            // callback for theming
+            RegisterCallback("themeCallback", (theme) =>
+            {
+                OnTheming(this, JsonConvert.DeserializeObject<ThemingEventArgs>(theme));
+            });
 
             //Callback for badge update
             RegisterCallback("badgeCallback", (args) =>

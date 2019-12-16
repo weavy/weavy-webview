@@ -23,8 +23,29 @@ namespace Xamarin.Forms.Sample.Views
                 Console.WriteLine(args.Notifications);
             };
 
+            weavyWebView.Loading += (sender, args) =>
+            {
+                Console.WriteLine("Loading webview...");
+            };
+
+            weavyWebView.LoadFinished += (sender, args) =>
+            {
+                Console.WriteLine("Load webview finished...");
+            };
+
+            weavyWebView.LoadError += (sender, args) =>
+            {
+                Console.WriteLine("Error when loading webview!");
+            };
+
+            weavyWebView.Theming += (sender, args) =>
+            {
+                Console.WriteLine("Got theme!");
+            };
+
+
             // listen to signed in event
-            weavyWebView.SignInCompleted += (sender, args) =>
+            weavyWebView.SignedIn += (sender, args) =>
             {
                 // check if successful login
                 if(args.Status == AuthenticationStatus.OK)

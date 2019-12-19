@@ -63,6 +63,18 @@ namespace Weavy.WebView.Plugin.Forms.iOS
                 e.NewElement.JavaScriptLoadRequested += (sender, js) => {
                     Inject(js);
                 };
+
+                // handle go back requests
+                e.NewElement.GoBackRequested += (sender, args) => {
+                    if (!Control.CanGoBack) return;
+                    Control.GoBack();
+                };
+
+                // handle go formward requests
+                e.NewElement.GoForwardRequested += (sender, args) => {
+                    if (!Control.CanGoForward) return;
+                    Control.GoForward();
+                };
             }
         }
 

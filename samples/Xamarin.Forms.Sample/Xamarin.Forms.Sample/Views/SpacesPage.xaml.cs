@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using Weavy.WebView.Plugin.Forms.Models;
 
@@ -31,6 +32,10 @@ namespace Xamarin.Forms.Sample.Views
             weavyWebView.LoadFinished += (sender, args) =>
             {
                 Console.WriteLine("Load webview finished...");
+
+                weavyWebView.GetUser((data) => {
+                    var user = JsonConvert.DeserializeObject<User>(data);                    
+                });
             };
 
             weavyWebView.LoadError += (sender, args) =>

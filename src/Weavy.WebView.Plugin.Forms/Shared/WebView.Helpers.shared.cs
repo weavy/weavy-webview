@@ -1,5 +1,8 @@
-﻿namespace Weavy.WebView.Plugin.Forms.Helpers
+﻿using Weavy.WebView.Plugin.Forms.Models;
+
+namespace Weavy.WebView.Plugin.Forms.Helpers
 {
+    
     /// <summary>
     /// Client script helper
     /// </summary>
@@ -53,6 +56,19 @@ try{
 if(typeof weavyAppScripts === 'undefined') {
 
     var weavyAppScripts = weavyAppScripts || {};
+
+
+    weavyAppScripts.user = (function(){    
+        function get(){            
+            $.ajax('/a/users/me').then(function(response){                                   
+                Native('userCallback', response);
+            });   
+        }
+
+        return {
+            get: get
+        };
+    })();
 
     /********************************************/
     /* Register user for azure notification hub */

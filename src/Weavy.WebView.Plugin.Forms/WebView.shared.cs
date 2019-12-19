@@ -23,7 +23,7 @@ namespace Weavy.WebView.Plugin.Forms
         public EventHandler<string> JavaScriptLoadRequested;
         internal event EventHandler GoBackRequested;
         internal event EventHandler GoForwardRequested;
-
+        
         #endregion
 
         #region private props
@@ -146,6 +146,15 @@ namespace Weavy.WebView.Plugin.Forms
         }
 
         /// <summary>
+        /// Get the current user
+        /// </summary>
+        public void GetUser(Action<string> callback)
+        {
+            RegisterCallback("userCallback", callback);
+            CallJsFunction("weavyAppScripts.user.get");
+        }
+
+        /// <summary>
         /// Inject a script snippet into the Weavy Web View that will be executed.
         /// </summary>
         /// <param name="script"></param>
@@ -164,6 +173,11 @@ namespace Weavy.WebView.Plugin.Forms
         /// <param name="callback"></param>
         public void RegisterCallback(string name, Action<string> callback)
         {
+            if (registeredActions.ContainsKey(name))
+            {
+                registeredActions.Remove(name);
+            }
+
             registeredActions.Add(name, callback);
         }
 
@@ -312,7 +326,8 @@ namespace Weavy.WebView.Plugin.Forms
         }
 
         private void RegisterCallbacks()
-        {            
+        {
+
             // callback when signing in with token
             RegisterCallback("signInTokenCompleteCallback", (args) =>
             {
@@ -340,6 +355,7 @@ namespace Weavy.WebView.Plugin.Forms
                 var badgeArgs = JsonConvert.DeserializeObject<BadgeEventArgs>(args);
                 OnBadgeUpdate(this, badgeArgs);
             });
+
         }
 
         #endregion

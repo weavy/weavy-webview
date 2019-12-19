@@ -66,4 +66,14 @@ namespace Weavy.WebView.Plugin.Forms.Models
 
         public string c { get; set; }
     }
+
+    /// <summary>
+    /// User object
+    /// </summary>
+    public class User
+    {
+        public int Id { get; set; }
+        public Guid Guid { get; set; }
+        public string FullName { get; set; }
+    }
 }

@@ -19,6 +19,9 @@
     <Compile Update="Views\MessengerPage.xaml.cs">
       <DependentUpon>MessengerPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\EmbeddedPage.xaml.cs">
+      <DependentUpon>EmbeddedPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\SpacesPage.xaml.cs">
       <DependentUpon>SpacesPage.xaml</DependentUpon>
     </Compile>

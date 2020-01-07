@@ -34,6 +34,15 @@ namespace Weavy.WebView.Plugin.Forms.Models
     }
 
     /// <summary>
+    /// Link clicked event args
+    /// </summary>
+    public class LinkEventArgs : EventArgs
+    {
+        public string Url { get; set; }
+        
+    }
+
+    /// <summary>
     /// Authentication status enum
     /// </summary>
     public enum AuthenticationStatus

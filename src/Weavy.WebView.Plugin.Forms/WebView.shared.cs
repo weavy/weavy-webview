@@ -20,6 +20,7 @@ namespace Weavy.WebView.Plugin.Forms
         public EventHandler<AuthenticationEventArgs> SignedIn;
         public EventHandler<AuthenticationEventArgs> SignedOut;
         public EventHandler<ThemingEventArgs> Theming;
+        public EventHandler<LinkEventArgs> LinkClicked;
         public EventHandler<string> JavaScriptLoadRequested;
         internal event EventHandler GoBackRequested;
         internal event EventHandler GoForwardRequested;
@@ -40,6 +41,12 @@ namespace Weavy.WebView.Plugin.Forms
         public static readonly BindableProperty UriProperty = BindableProperty.Create(
           propertyName: "Uri",
           returnType: typeof(string),
+          declaringType: typeof(WeavyWebView),
+          defaultValue: default(string));
+
+        public static readonly BindableProperty HeadersProperty = BindableProperty.Create(
+          propertyName: "Headers",
+          returnType: typeof(List<KeyValuePair<string, string>>),
           declaringType: typeof(WeavyWebView),
           defaultValue: default(string));
 
@@ -65,6 +72,8 @@ namespace Weavy.WebView.Plugin.Forms
 
         public WeavyWebView()
         {
+            Headers = new List<KeyValuePair<string, string>>();
+
             // make sure the web view fills its container
             VerticalOptions = LayoutOptions.FillAndExpand;
             HorizontalOptions = LayoutOptions.FillAndExpand;
@@ -86,6 +95,12 @@ namespace Weavy.WebView.Plugin.Forms
         {
             get { return (string)GetValue(UriProperty); }
             set { SetValue(UriProperty, value); }
+        }
+
+        public List<KeyValuePair<string, string>> Headers
+        {
+            get { return (List < KeyValuePair<string, string>>)GetValue(HeadersProperty); }
+            set { SetValue(HeadersProperty, value); }
         }
 
         /// <summary>
@@ -315,6 +330,15 @@ namespace Weavy.WebView.Plugin.Forms
             }
         }
 
+        internal void OnLinkClicked(object sender, LinkEventArgs e)
+        {
+            var handler = this.LinkClicked;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
         internal bool TryGetAction(string name, out Action<string> action)
         {
             return this.registeredActions.TryGetValue(name, out action);
@@ -354,6 +378,14 @@ namespace Weavy.WebView.Plugin.Forms
                 //notify about badge update
                 var badgeArgs = JsonConvert.DeserializeObject<BadgeEventArgs>(args);
                 OnBadgeUpdate(this, badgeArgs);
+            });
+
+            //Callback when a link has been clicked
+            RegisterCallback("linkCallback", (args) =>
+            {
+                //notify about link clicked                
+                var linkArgs = JsonConvert.DeserializeObject<LinkEventArgs>(args);
+                OnLinkClicked(this, linkArgs);
             });
 
         }

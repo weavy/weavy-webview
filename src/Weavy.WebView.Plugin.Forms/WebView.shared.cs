@@ -6,16 +6,26 @@ using Weavy.WebView.Plugin.Forms.Models;
 using System.Text;
 using Weavy.WebView.Plugin.Forms.Helpers;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.Linq;
+using System.Net;
 
 namespace Weavy.WebView.Plugin.Forms
 {
+    public static class WeavyWebViewConfiguration
+    {
+        public static string AuthenticationToken { get; set; }
+    }
+
     public class WeavyWebView : View
     {
         #region event handlers
-
+        public static CookieContainer CookieJar = new CookieContainer();
+        public EventHandler InitComplete;
         public EventHandler LoadFinished;
         public EventHandler Loading;
         public EventHandler LoadError;
+        public EventHandler SSOError;
         public EventHandler<BadgeEventArgs> BadgeUpdated;
         public EventHandler<AuthenticationEventArgs> SignedIn;
         public EventHandler<AuthenticationEventArgs> SignedOut;
@@ -24,7 +34,9 @@ namespace Weavy.WebView.Plugin.Forms
         public EventHandler<string> JavaScriptLoadRequested;
         internal event EventHandler GoBackRequested;
         internal event EventHandler GoForwardRequested;
-        
+        internal event EventHandler LoadRequested;
+        internal event EventHandler ReloadRequested;
+
         #endregion
 
         #region private props
@@ -32,18 +44,23 @@ namespace Weavy.WebView.Plugin.Forms
         private readonly object injectLock = new object();
         private readonly Dictionary<string, Action<string>> registeredActions;
         private readonly Dictionary<string, Func<string, object[]>> registeredFunctions;
-        private readonly JsonSerializer jsonSerializer;
-
-        #endregion
         
+        #endregion
+
         #region bindable props
-                
+
+        public static readonly BindableProperty CookiesProperty = BindableProperty.Create(
+            propertyName: "Cookies",
+            returnType: typeof(CookieContainer),
+            declaringType: typeof(WeavyWebView),
+            defaultValue: default(string));
+
         public static readonly BindableProperty UriProperty = BindableProperty.Create(
           propertyName: "Uri",
           returnType: typeof(string),
           declaringType: typeof(WeavyWebView),
           defaultValue: default(string));
-
+                
         public static readonly BindableProperty HeadersProperty = BindableProperty.Create(
           propertyName: "Headers",
           returnType: typeof(List<KeyValuePair<string, string>>),
@@ -73,6 +90,7 @@ namespace Weavy.WebView.Plugin.Forms
         public WeavyWebView()
         {
             Headers = new List<KeyValuePair<string, string>>();
+            Cookies = new CookieContainer();
 
             // make sure the web view fills its container
             VerticalOptions = LayoutOptions.FillAndExpand;
@@ -88,18 +106,28 @@ namespace Weavy.WebView.Plugin.Forms
 
         #region public props
 
+        public CookieContainer Cookies
+        {
+            get { return (CookieContainer)GetValue(CookiesProperty); }
+            set { SetValue(CookiesProperty, value); }
+        }
+
         /// <summary>
         /// The uri to the Weavy page that should be displayed in the Weavy Web View
         /// </summary>
         public string Uri
         {
             get { return (string)GetValue(UriProperty); }
-            set { SetValue(UriProperty, value); }
+            set
+            { SetValue(UriProperty, value); }
         }
 
+        /// <summary>
+        /// Additional headers that should be set on the web view
+        /// </summary>
         public List<KeyValuePair<string, string>> Headers
         {
-            get { return (List < KeyValuePair<string, string>>)GetValue(HeadersProperty); }
+            get { return (List<KeyValuePair<string, string>>)GetValue(HeadersProperty); }
             set { SetValue(HeadersProperty, value); }
         }
 
@@ -111,7 +139,8 @@ namespace Weavy.WebView.Plugin.Forms
         public string AuthenticationToken
         {
             get { return (string)GetValue(AuthenticationTokenProperty); }
-            set { SetValue(AuthenticationTokenProperty, value); }
+            set
+            { SetValue(AuthenticationTokenProperty, value); }
         }
 
         /// <summary>
@@ -132,9 +161,44 @@ namespace Weavy.WebView.Plugin.Forms
             set { SetValue(CanGoForwardProperty, value); }
         }
 
+        public string BaseUrl => new Uri(Uri).GetLeftPart(UriPartial.Authority);
+
         #endregion
 
         #region public methods
+
+        /// <summary>
+        /// Load the Weavy Web View with the specified uri and authentication token. 
+        /// </summary>
+        public void Load(string uri = null, string authenticationToken = null)
+        {
+            AuthenticationToken = authenticationToken ?? AuthenticationToken;
+
+            Uri = uri ?? Uri;
+
+            if (!string.IsNullOrEmpty(AuthenticationToken))
+            {
+                HandleAuthentication(AuthenticationToken);
+            }
+
+            var handler = this.LoadRequested;
+            if (handler != null)
+            {
+                handler(this, null);
+            }
+        }
+
+        /// <summary>
+        /// Reload the Weavy Web View. 
+        /// </summary>
+        public void Reload()
+        {
+            var handler = this.ReloadRequested;
+            if (handler != null)
+            {
+                handler(this, null);
+            }
+        }
 
         /// <summary>
         /// Go back in the Weavy Web View. You can check <see cref="CanGoBack"/> if it's possible to go back.
@@ -257,17 +321,19 @@ namespace Weavy.WebView.Plugin.Forms
 
         #region private and internal methods
 
+        internal void OnInitFinished(object sender, EventArgs e)
+        {
+            var handler = this.InitComplete;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
         internal void OnLoadFinished(object sender, EventArgs e)
         {
             // inject the scripts 
             InjectJavaScript(ScriptHelper.Scripts);
-
-            // sso if token is set
-            if (!string.IsNullOrEmpty(AuthenticationToken))
-            {
-                InjectJavaScript(ScriptHelper.SignInTokenScript(AuthenticationToken));
-                AuthenticationToken = "";
-            }
 
             var handler = this.LoadFinished;
             if (handler != null)
@@ -349,6 +415,54 @@ namespace Weavy.WebView.Plugin.Forms
             return this.registeredFunctions.TryGetValue(name, out func);
         }
 
+
+        private void HandleAuthentication(string token)
+        {
+            
+            var baseUrl = new Uri(BaseUrl);
+
+            HttpClientHandler httpHandler = new HttpClientHandler
+            {
+                CookieContainer = CookieJar
+            };
+
+            // use token to get a new auth cookie
+            using var client = new HttpClient(httpHandler)
+            {
+                BaseAddress = baseUrl
+
+            };
+            var content = new StringContent($"{{jwt: '{token}' }}", Encoding.UTF8, "application/json");
+            var result = client.PostAsync("/sign-in-token", content).Result;
+
+            // cookies 
+            IEnumerable<Cookie> responseCookies = CookieJar.GetCookies(baseUrl).Cast<Cookie>();
+            foreach (Cookie cookie in responseCookies)
+            {
+                Cookies.Add(baseUrl, cookie);
+                //Debug.WriteLine("Cookie Name is {0} and Value is {1}", cookie.Name, cookie.Value);
+            }
+
+            // get cookie
+            var weavyCookie = result.Headers.GetValues("Set-Cookie").FirstOrDefault();
+            if (result.IsSuccessStatusCode)
+            {
+                var c = weavyCookie.Split('=');
+
+                // add cookie to Headers. Added in platform specific implementation
+                Headers.Add(new KeyValuePair<string, string>(c[0], c[1]));
+
+            }
+            else
+            {
+                var handler = this.SSOError;
+                if (handler != null)
+                {
+                    handler(this, new EventArgs());
+                }
+            }
+
+        }
         private void RegisterCallbacks()
         {
 
@@ -361,7 +475,8 @@ namespace Weavy.WebView.Plugin.Forms
 
 
             //Callback from sign out script
-            RegisterCallback("signOutCallback", (args) => {
+            RegisterCallback("signOutCallback", (args) =>
+            {
                 OnSignedOut(this, new AuthenticationEventArgs() { Status = AuthenticationStatus.NOTAUTHENTICATED, Message = "Signed out completed" });
             });
 
@@ -391,6 +506,6 @@ namespace Weavy.WebView.Plugin.Forms
         }
 
         #endregion
-               
+
     }
 }

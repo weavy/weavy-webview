@@ -1,6 +1,9 @@
 ﻿using Foundation;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Net;
 using System.Text;
 using Weavy.WebView.Plugin.Forms;
 using Weavy.WebView.Plugin.Forms.iOS;
@@ -39,6 +42,7 @@ namespace Weavy.WebView.Plugin.Forms.iOS
                 userController.AddScriptMessageHandler(this, "native");
 
                 var config = new WKWebViewConfiguration { UserContentController = userController };
+
                 var webView = new WKWebView(Frame, config)
                 {
                     AllowsBackForwardNavigationGestures = true,
@@ -56,12 +60,15 @@ namespace Weavy.WebView.Plugin.Forms.iOS
                 var hybridWebView = e.OldElement as WeavyWebView;                
             }
             if (e.NewElement != null)
-            {
-                Control.LoadRequest(new NSUrlRequest(new NSUrl(new Uri(e.NewElement.Uri).AbsoluteUri)));
-
+            {                
                 // set js handler
                 e.NewElement.JavaScriptLoadRequested += (sender, js) => {
                     Inject(js);
+                };
+
+                // handle load requests
+                e.NewElement.LoadRequested += (sender, args) => {
+                    LoadRequest(LoadRequestComplete);
                 };
 
                 // handle go back requests
@@ -75,24 +82,76 @@ namespace Weavy.WebView.Plugin.Forms.iOS
                     if (!Control.CanGoForward) return;
                     Control.GoForward();
                 };
+
+                // handle go formward requests
+                e.NewElement.ReloadRequested += (sender, args) => {                    
+                    Control.Reload();
+                };
+
+                e.NewElement.OnInitFinished(this, EventArgs.Empty);
             }
         }
 
-        /// <summary>
-        /// A property has changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void LoadRequest(Action completion)
         {
-            base.OnElementPropertyChanged(sender, e);
-
-            if (e.PropertyName == "Uri")
+            if (!string.IsNullOrEmpty(Element.AuthenticationToken))
             {
-                Control.LoadRequest(new NSUrlRequest(new NSUrl(new Uri(Element.Uri).AbsoluteUri)));
+
+                var uri = new Uri(Element.BaseUrl);
+                string domain = uri.Host;
+
+                // Set cookies here
+                var cookieJar = NSHttpCookieStorage.SharedStorage;
+                cookieJar.AcceptPolicy = NSHttpCookieAcceptPolicy.Always;
+
+                //clean up old cookies
+                foreach (var aCookie in cookieJar.Cookies)
+                {
+                    cookieJar.DeleteCookie(aCookie);
+                }
+
+                //set up the new cookies
+                var jCookies = Element.Cookies.GetCookies(uri);
+                IList<NSHttpCookie> eCookies =
+                    (from object jCookie in jCookies
+                     where jCookie != null
+                     select (Cookie)jCookie
+                     into netCookie
+                     select new NSHttpCookie(netCookie)).ToList();
+
+                cookieJar.SetCookies(eCookies.ToArray(), uri, uri);
+                                
+                // create wk cookie
+                WKHttpCookieStore cookieStore = Control.Configuration.WebsiteDataStore.HttpCookieStore;
+
+                if (cookieJar.Cookies.Any())
+                {
+                    foreach (var c in cookieJar.Cookies)
+                    {
+                        cookieStore.SetCookie(c, () =>
+                        {                            
+                            completion();
+                            return;
+                            
+                        });
+                    }   
+                }
+                else
+                {
+                    completion();
+                }
+            }
+            else
+            {
+                completion();
             }
         }
 
+
+        private void LoadRequestComplete()
+        {
+            Control.LoadRequest(new NSUrlRequest(new NSUrl(new Uri(Element.Uri).AbsoluteUri)));
+        }
 
         /// <summary>
         /// Generates the script to inject into the web view
@@ -129,9 +188,7 @@ namespace Weavy.WebView.Plugin.Forms.iOS
 
             Element.MessageReceived(message.Body.ToString());
         }
-
-        
-
+                
         /// <summary>
         /// Called when navigation is complete in the webview
         /// </summary>

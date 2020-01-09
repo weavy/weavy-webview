@@ -67,7 +67,10 @@ namespace Weavy.WebView.Plugin.Forms.Droid
                 var newElementController = e.NewElement as WeavyWebView;
 
                 Control.AddJavascriptInterface(new JSBridge(this), "jsBridge");
-                Control.LoadUrl(Element.Uri);
+                //Control.LoadUrl(Element.Uri);
+
+                // handle load requests
+                newElementController.LoadRequested += OnLoadRequested;
 
                 // handle javascript injection requests
                 newElementController.JavaScriptLoadRequested += OnJavaScriptLoadRequested;
@@ -77,7 +80,14 @@ namespace Weavy.WebView.Plugin.Forms.Droid
 
                 // handle go formward requests
                 newElementController.GoForwardRequested += OnGoForwardRequested;
+
+                newElementController.OnInitFinished(this, EventArgs.Empty);
             }
+        }
+
+        void OnLoadRequested(object sender, EventArgs args)
+        {
+            LoadRequest();
         }
 
         void OnJavaScriptLoadRequested(object sender, string script)
@@ -103,6 +113,26 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             UpdateCanGoBackForward();
         }
 
+        private void LoadRequest()
+        {
+            if (Element == null) return;
+
+            var cookieManager = CookieManager.Instance;
+            cookieManager.SetAcceptCookie(true);
+            cookieManager.SetAcceptThirdPartyCookies(Control, true);
+            cookieManager.RemoveAllCookie();
+            var cookies = ElementController.Cookies.GetCookies(new System.Uri(ElementController.BaseUrl));
+            for (var i = 0; i < cookies.Count; i++)
+            {
+                string cookieValue = cookies[i].Value;
+                string cookieDomain = cookies[i].Domain;
+                string cookieName = cookies[i].Name;
+                cookieManager.SetCookie(cookieDomain, cookieName + "=" + cookieValue);
+            }
+
+            Control.LoadUrl(Element.Uri);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (_isDisposed)
@@ -118,10 +148,11 @@ namespace Weavy.WebView.Plugin.Forms.Droid
                     ElementController.JavaScriptLoadRequested -= OnJavaScriptLoadRequested;                    
                     ElementController.GoBackRequested -= OnGoBackRequested;
                     ElementController.GoForwardRequested -= OnGoForwardRequested;
+                    ElementController.LoadRequested-= OnLoadRequested;
                     //ElementController.ReloadRequested -= OnReloadRequested;
-                    
-                    _webViewClient?.Dispose();
-                    _webChromeClient?.Dispose();
+
+                    //_webViewClient?.Dispose();
+                    //_webChromeClient?.Dispose();
                 }
             }
 

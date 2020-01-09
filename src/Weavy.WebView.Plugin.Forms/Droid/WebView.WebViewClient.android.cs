@@ -42,13 +42,15 @@ namespace Weavy.WebView.Plugin.Forms.Droid
         /// <param name="favicon"></param>
         public override void OnPageStarted(Android.Webkit.WebView view, string url, Bitmap favicon)
         {
-            base.OnPageStarted(view, url, favicon);
-
             WeavyWebViewRenderer hybrid;
+            
             if (this.WebHybrid != null && this.WebHybrid.TryGetTarget(out hybrid))
-            {
+            {               
                 hybrid.OnLoading();
             }
+
+            base.OnPageStarted(view, url, favicon);
+
         }
 
         /// <summary>

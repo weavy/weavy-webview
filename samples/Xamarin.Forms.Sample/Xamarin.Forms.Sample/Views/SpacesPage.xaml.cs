@@ -1,6 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
 using Weavy.WebView.Plugin.Forms.Models;
 
 namespace Xamarin.Forms.Sample.Views
@@ -13,9 +17,14 @@ namespace Xamarin.Forms.Sample.Views
         public SpacesPage()
         {
             InitializeComponent();
-            
+
             // set persistant test jwt token
             weavyWebView.AuthenticationToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTk5IiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJtYWdudXNAd2VhdnkuY29tIiwidXNlcm5hbWUiOiJta3JvbmEiLCJleHAiOiIxNTM0ODIwMjExMDAwIiwiaXNzIjoiTW9iaWxlVGVzdEFwcCJ9.3qU8CRXfLLvzdzhaj35mmJhQzBBkusAUWV1xKLEaG-I";
+
+            weavyWebView.InitComplete += (s, a) =>
+            {
+                weavyWebView.Load();
+            };
 
             // listen to badge updated event
             weavyWebView.BadgeUpdated += (sender, args) =>

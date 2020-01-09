@@ -8,28 +8,30 @@ namespace Weavy.WebView.Plugin.Forms.Helpers
     /// </summary>
     public static class ScriptHelper
     {
-        public static string SignInTokenScript(string token) => $@"
-/********************************************/
-/* sign in by token                         */
-/********************************************/
-try{{
-    $.ajax({{
-            url: '/sign-in-token',
-            contentType: 'application/json',
-            data: JSON.stringify({{jwt: '{token}'}}),
-            type: 'POST'
-        }}).then(function(response){{
-            Native('signInTokenCompleteCallback', {{status: 1}});            
-            location.reload();            
-        }}).fail(function(e){{
-            Native('signInTokenCompleteCallback', {{status: 2, message: e.responseText}});            
-        }});  
-}} catch(e){{
+//        public static string SignInTokenScript(string token) => $@"
+///********************************************/
+///* sign in by token                         */
+///********************************************/
+//try{{
+//    $.ajax('/a/users/me').fail(function(){{
+//        $.ajax({{
+//            url: '/sign-in-token',
+//            contentType: 'application/json',
+//            data: JSON.stringify({{jwt: '{token}'}}),
+//            type: 'POST'
+//        }}).then(function(response){{
+//            Native('signInTokenCompleteCallback', {{status: 1}});            
+//            location.reload();            
+//        }}).fail(function(e){{
+//            Native('signInTokenCompleteCallback', {{status: 2, message: e.responseText}});            
+//        }});     
+//    }};
+//}} catch(e){{
+//        Native('signInTokenCompleteCallback', {{status: 3, message: e.responseText}});            
+//}};
 
-Native('signInTokenCompleteCallback', {{status: 3, message: e.responseText}});            
-
-}}
-";
+   
+//";
         
         public static string ReconnectScript = @"
 /********************************************/
@@ -167,14 +169,14 @@ if(typeof weavyAppScripts === 'undefined') {
 
 	            if(url.indexOf(window.location.origin) == -1 || target == '_blank'){
 			        e.preventDefault();	
-                    Native('handleLinksCallback', url);
+                    Native('linkCallback', { url: url });
 	            }
             });
 
             $(document).on('click', 'a[href^=ms-]', function (e) {
 	            e.preventDefault();		
                 var url = $(this).attr('href');
-                Native('handleLinksCallback', url);	
+                Native('linkCallback', { url: url });	
             });
         }
 

@@ -8,7 +8,17 @@
             x:Class="Xamarin.Forms.Sample.Views.MainPage">
 
     <TabbedPage.Children>
-        <NavigationPage Title="Browse">
+        <NavigationPage Title="Embedded">
+            <NavigationPage.Icon>
+                <OnPlatform x:TypeArguments="FileImageSource">
+                    <On Platform="iOS" Value="tab_about.png"/>
+                </OnPlatform>
+            </NavigationPage.Icon>
+            <x:Arguments>
+                <views:EmbeddedPage />
+            </x:Arguments>
+        </NavigationPage>
+        <!--<NavigationPage Title="Browse">
             <NavigationPage.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
                     <On Platform="iOS" Value="tab_feed.png"/>
@@ -28,7 +38,7 @@
             <x:Arguments>
                 <views:AboutPage />
             </x:Arguments>
-        </NavigationPage>
+        </NavigationPage>-->
 
         <NavigationPage Title="Spaces">
             <NavigationPage.Icon>
@@ -52,16 +62,7 @@
             </x:Arguments>
         </NavigationPage>
         
-        <NavigationPage Title="Embedded">
-            <NavigationPage.Icon>
-                <OnPlatform x:TypeArguments="FileImageSource">
-                    <On Platform="iOS" Value="tab_about.png"/>
-                </OnPlatform>
-            </NavigationPage.Icon>
-            <x:Arguments>
-                <views:EmbeddedPage />
-            </x:Arguments>
-        </NavigationPage>
+        
     </TabbedPage.Children>
     
 </TabbedPage>

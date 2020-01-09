@@ -13,9 +13,17 @@ namespace Xamarin.Forms.Sample.Views
         public MessengerPage()
         {
             InitializeComponent();
-
+            //weavyMessenger.Uri = "https://mobiletest.weavycloud.com/messenger";
             weavyMessenger.AuthenticationToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTk5IiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJtYWdudXNAd2VhdnkuY29tIiwidXNlcm5hbWUiOiJta3JvbmEiLCJleHAiOiIxNTM0ODIwMjExMDAwIiwiaXNzIjoiTW9iaWxlVGVzdEFwcCJ9.3qU8CRXfLLvzdzhaj35mmJhQzBBkusAUWV1xKLEaG-I";
+            weavyMessenger.InitComplete += (sender, args) =>
+            {
+                weavyMessenger.Load("https://mobiletest.weavycloud.com/messenger");
+            };
+        }
 
+        private void BtnReload_Clicked(object sender, EventArgs e)
+        {
+            weavyMessenger.Reload();
         }
     }
 }

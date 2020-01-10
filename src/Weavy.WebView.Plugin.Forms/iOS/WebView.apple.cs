@@ -68,7 +68,7 @@ namespace Weavy.WebView.Plugin.Forms.iOS
 
                 // handle load requests
                 e.NewElement.LoadRequested += (sender, args) => {
-                    LoadRequest(LoadRequestComplete);
+                    Request(LoadRequestComplete);
                 };
 
                 // handle go back requests
@@ -92,7 +92,11 @@ namespace Weavy.WebView.Plugin.Forms.iOS
             }
         }
 
-        private void LoadRequest(Action completion)
+        /// <summary>
+        /// Request to load an uri
+        /// </summary>
+        /// <param name="completion"></param>
+        private void Request(Action completion)
         {
             if (!string.IsNullOrEmpty(Element.AuthenticationToken))
             {
@@ -148,6 +152,9 @@ namespace Weavy.WebView.Plugin.Forms.iOS
         }
 
 
+        /// <summary>
+        /// Load uri 
+        /// </summary>
         private void LoadRequestComplete()
         {
             Control.LoadRequest(new NSUrlRequest(new NSUrl(new Uri(Element.Uri).AbsoluteUri)));

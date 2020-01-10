@@ -72,6 +72,9 @@ namespace Weavy.WebView.Plugin.Forms.Droid
                 // handle load requests
                 newElementController.LoadRequested += OnLoadRequested;
 
+                // handle reload requests
+                newElementController.ReloadRequested += OnReloadRequested;
+
                 // handle javascript injection requests
                 newElementController.JavaScriptLoadRequested += OnJavaScriptLoadRequested;
 
@@ -113,6 +116,14 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             UpdateCanGoBackForward();
         }
 
+        void OnReloadRequested(object sender, EventArgs args)
+        {
+            Control.Reload();
+        }
+
+        /// <summary>
+        /// Load an url
+        /// </summary>
         private void LoadRequest()
         {
             if (Element == null) return;
@@ -133,6 +144,10 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             Control.LoadUrl(Element.Uri);
         }
 
+        /// <summary>
+        /// Dispose web view
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             if (_isDisposed)
@@ -149,10 +164,7 @@ namespace Weavy.WebView.Plugin.Forms.Droid
                     ElementController.GoBackRequested -= OnGoBackRequested;
                     ElementController.GoForwardRequested -= OnGoForwardRequested;
                     ElementController.LoadRequested-= OnLoadRequested;
-                    //ElementController.ReloadRequested -= OnReloadRequested;
-
-                    //_webViewClient?.Dispose();
-                    //_webChromeClient?.Dispose();
+                    ElementController.ReloadRequested -= OnReloadRequested;
                 }
             }
 
@@ -170,6 +182,9 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             return d != null ? d(this) : new WeavyWebViewClient(this);
         }
 
+        /// <summary>
+        /// Check if we can go back or forward in the webview
+        /// </summary>
         protected internal void UpdateCanGoBackForward()
         {
             if (Element == null || Control == null)

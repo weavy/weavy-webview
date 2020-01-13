@@ -23,7 +23,7 @@ namespace Xamarin.Forms.Sample.Views
             weavyWebView.AuthenticationToken = AuthenticationHelpers.JwtToken;
 
             // load the web view after init is complete. Note that the uri property is set in the .xaml view
-            weavyWebView.InitComplete += (s, a) =>
+            weavyWebView.InitCompleted += (s, a) =>
             {
                 weavyWebView.Load();
             };

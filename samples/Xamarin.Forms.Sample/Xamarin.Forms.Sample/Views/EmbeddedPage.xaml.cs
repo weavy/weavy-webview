@@ -35,9 +35,9 @@ namespace Xamarin.Forms.Sample.Views
             weavyWebView.AuthenticationToken = weavyWebView2.AuthenticationToken = weavyWebView3.AuthenticationToken = demoToken;
             
             // load the web view after init is complete.
-            weavyWebView.InitComplete += (sender, args) => { weavyWebView.Load(); };
-            weavyWebView2.InitComplete += (sender, args) => { weavyWebView2.Load(); };
-            weavyWebView3.InitComplete += (sender, args) => { weavyWebView3.Load(); };
+            weavyWebView.InitCompleted += (sender, args) => { weavyWebView.Load(); };
+            weavyWebView2.InitCompleted += (sender, args) => { weavyWebView2.Load(); };
+            weavyWebView3.InitCompleted += (sender, args) => { weavyWebView3.Load(); };
 
             // handle external link clicks in Weavy web view
             weavyWebView.LinkClicked += (sender, args) =>

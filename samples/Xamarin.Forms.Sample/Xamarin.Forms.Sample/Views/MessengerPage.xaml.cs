@@ -19,7 +19,7 @@ namespace Xamarin.Forms.Sample.Views
             weavyMessenger.AuthenticationToken = AuthenticationHelpers.JwtToken;
 
             // load the web view after init is complete. Set the url to the /messenger
-            weavyMessenger.InitComplete += (sender, args) =>
+            weavyMessenger.InitCompleted += (sender, args) =>
             {
                 weavyMessenger.Load("https://mobiletest.weavycloud.com/messenger");
             };

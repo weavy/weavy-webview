@@ -21,7 +21,7 @@ namespace Weavy.WebView.Plugin.Forms
     {
         #region event handlers
         public static CookieContainer CookieJar = new CookieContainer();
-        public EventHandler InitComplete;
+        public EventHandler InitCompleted;
         public EventHandler LoadFinished;
         public EventHandler Loading;
         public EventHandler LoadError;
@@ -312,7 +312,7 @@ namespace Weavy.WebView.Plugin.Forms
 
         internal void OnInitFinished(object sender, EventArgs e)
         {
-            var handler = this.InitComplete;
+            var handler = this.InitCompleted;
             if (handler != null)
             {
                 handler(this, e);

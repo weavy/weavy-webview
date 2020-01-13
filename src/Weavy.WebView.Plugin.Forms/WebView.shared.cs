@@ -88,8 +88,7 @@ namespace Weavy.WebView.Plugin.Forms
         #endregion
 
         public WeavyWebView()
-        {
-            Headers = new List<KeyValuePair<string, string>>();
+        {            
             Cookies = new CookieContainer();
 
             // make sure the web view fills its container
@@ -121,16 +120,7 @@ namespace Weavy.WebView.Plugin.Forms
             set
             { SetValue(UriProperty, value); }
         }
-
-        /// <summary>
-        /// Additional headers that should be set on the web view
-        /// </summary>
-        public List<KeyValuePair<string, string>> Headers
-        {
-            get { return (List<KeyValuePair<string, string>>)GetValue(HeadersProperty); }
-            set { SetValue(HeadersProperty, value); }
-        }
-
+        
         /// <summary>
         /// A JWT token that will be passed along to Weavy. 
         /// A valid JWT token enables the SSO authentication flow and the user will be signed in automatically.
@@ -417,10 +407,10 @@ namespace Weavy.WebView.Plugin.Forms
 
 
         private void HandleAuthentication(string token)
-        {
-            
+        {            
             var baseUrl = new Uri(BaseUrl);
 
+            // hadler with cookie container
             HttpClientHandler httpHandler = new HttpClientHandler
             {
                 CookieContainer = CookieJar
@@ -430,38 +420,26 @@ namespace Weavy.WebView.Plugin.Forms
             using var client = new HttpClient(httpHandler)
             {
                 BaseAddress = baseUrl
-
             };
             var content = new StringContent($"{{jwt: '{token}' }}", Encoding.UTF8, "application/json");
             var result = client.PostAsync("/sign-in-token", content).Result;
 
-            // cookies 
+            // get cookies 
             IEnumerable<Cookie> responseCookies = CookieJar.GetCookies(baseUrl).Cast<Cookie>();
             foreach (Cookie cookie in responseCookies)
             {
-                Cookies.Add(baseUrl, cookie);
-                //Debug.WriteLine("Cookie Name is {0} and Value is {1}", cookie.Name, cookie.Value);
+                Cookies.Add(baseUrl, cookie);                
             }
 
-            // get cookie
-            var weavyCookie = result.Headers.GetValues("Set-Cookie").FirstOrDefault();
-            if (result.IsSuccessStatusCode)
-            {
-                var c = weavyCookie.Split('=');
-
-                // add cookie to Headers. Added in platform specific implementation
-                Headers.Add(new KeyValuePair<string, string>(c[0], c[1]));
-
-            }
-            else
+            if (!result.IsSuccessStatusCode)
             {
                 var handler = this.SSOError;
                 if (handler != null)
                 {
                     handler(this, new EventArgs());
                 }
-            }
 
+            }
         }
         private void RegisterCallbacks()
         {

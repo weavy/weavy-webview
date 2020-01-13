@@ -5,18 +5,20 @@
     /// </summary>
     public static class ScriptHelper
     {        
-        public static string ReconnectScript = @"
+        /// <summary>
+        /// Connect to real time hub. Useful when the app has been inactive for a while and the real time hub is disconnected.
+        /// </summary>
+        public static string ConnectScript = @"
 /********************************************/
 /* Reconnect to weavy rtm or reload page      */
 /********************************************/
-try{ 
-    if(!wvy.connection.status || wvy.connection.status() === 4) {
-        wvy.connection.connect(); 
-        wvy.messenger.refresh(); 
-    }
+try{  
+    wvy.connection.connect();  
 } catch(e){}
 ";
-
+        /// <summary>
+        /// Check for notification badge updates. This will trigger the BadgeUpdated event
+        /// </summary>
         public static string UpdateBadgeScript = @"
 /********************************************/
 /* update badge                             */
@@ -25,7 +27,9 @@ try{
     weavyAppScripts.badge.check();
 } catch(e){}
 ";
-
+        /// <summary>
+        /// Scripts injected in the web page
+        /// </summary>
         public static string Scripts = @"
 if(typeof weavyAppScripts === 'undefined') {
 

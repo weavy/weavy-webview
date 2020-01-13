@@ -2,6 +2,12 @@
 
 Weavy WebView for Xamarin.Forms. A view for displaying [Weavy](https://weavy.com) content in your app.
 
+## Installation
+
+Weavy.WebView.Plugin.Forms is available via NuGet:
+
+- NuGet Official Releases: <a href="https://www.nuget.org/packages/Weavy.WebView.Plugin.Forms/"><img alt="Nuget (with prereleases)" src="https://img.shields.io/nuget/vpre/Weavy.WebView.Plugin.Forms"></a> 
+
 ## Quick start
 
 ```

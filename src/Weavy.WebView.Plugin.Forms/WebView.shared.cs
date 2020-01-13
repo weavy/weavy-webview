@@ -26,9 +26,8 @@ namespace Weavy.WebView.Plugin.Forms
         public EventHandler Loading;
         public EventHandler LoadError;
         public EventHandler SSOError;
-        public EventHandler<BadgeEventArgs> BadgeUpdated;
-        public EventHandler<AuthenticationEventArgs> SignedIn;
-        public EventHandler<AuthenticationEventArgs> SignedOut;
+        public EventHandler<BadgeEventArgs> BadgeUpdated;        
+        public EventHandler SignedOut;
         public EventHandler<ThemingEventArgs> Theming;
         public EventHandler<LinkEventArgs> LinkClicked;
         public EventHandler<string> JavaScriptLoadRequested;
@@ -359,16 +358,7 @@ namespace Weavy.WebView.Plugin.Forms
             }
         }
 
-        internal void OnSignedIn(object sender, AuthenticationEventArgs e)
-        {
-            var handler = this.SignedIn;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        internal void OnSignedOut(object sender, AuthenticationEventArgs e)
+        internal void OnSignedOut(object sender, EventArgs e)
         {
             var handler = this.SignedOut;
             if (handler != null)
@@ -443,19 +433,11 @@ namespace Weavy.WebView.Plugin.Forms
         }
         private void RegisterCallbacks()
         {
-
-            // callback when signing in with token
-            RegisterCallback("signInTokenCompleteCallback", (args) =>
-            {
-                var authArgs = JsonConvert.DeserializeObject<AuthenticationEventArgs>(args);
-                OnSignedIn(this, authArgs);
-            });
-
-
+                        
             //Callback from sign out script
             RegisterCallback("signOutCallback", (args) =>
             {
-                OnSignedOut(this, new AuthenticationEventArgs() { Status = AuthenticationStatus.NOTAUTHENTICATED, Message = "Signed out completed" });
+                OnSignedOut(this, EventArgs.Empty);
             });
 
 

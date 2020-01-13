@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using Weavy.WebView.Plugin.Forms.Models;
+using Xamarin.Forms.Sample.Helpers;
 
 namespace Xamarin.Forms.Sample.Views
 {
@@ -18,9 +19,10 @@ namespace Xamarin.Forms.Sample.Views
         {
             InitializeComponent();
 
-            // set persistant test jwt token
-            weavyWebView.AuthenticationToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTk5IiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJtYWdudXNAd2VhdnkuY29tIiwidXNlcm5hbWUiOiJta3JvbmEiLCJleHAiOiIxNTM0ODIwMjExMDAwIiwiaXNzIjoiTW9iaWxlVGVzdEFwcCJ9.3qU8CRXfLLvzdzhaj35mmJhQzBBkusAUWV1xKLEaG-I";
+            // a persistent demo jwt token that works for the demo site above
+            weavyWebView.AuthenticationToken = AuthenticationHelpers.JwtToken;
 
+            // load the web view after init is complete. Note that the uri property is set in the .xaml view
             weavyWebView.InitComplete += (s, a) =>
             {
                 weavyWebView.Load();
@@ -29,47 +31,39 @@ namespace Xamarin.Forms.Sample.Views
             // listen to badge updated event
             weavyWebView.BadgeUpdated += (sender, args) =>
             {
-                Console.WriteLine(args.Conversations);
-                Console.WriteLine(args.Notifications);
+                Console.WriteLine(args.Conversations); // messenger notifications
+                Console.WriteLine(args.Notifications); // all other notifications
             };
 
+            // web view is loading page
             weavyWebView.Loading += (sender, args) =>
             {
                 Console.WriteLine("Loading webview...");
             };
 
+            // web view has finished loading page
             weavyWebView.LoadFinished += (sender, args) =>
             {
                 Console.WriteLine("Load webview finished...");
 
+                // exampleof getting current logged in user
                 weavyWebView.GetUser((data) => {
                     var user = JsonConvert.DeserializeObject<User>(data);                    
                 });
             };
 
+            // an error occurred when loading the page
             weavyWebView.LoadError += (sender, args) =>
             {
                 Console.WriteLine("Error when loading webview!");
             };
 
-            weavyWebView.Theming += (sender, args) =>
+            // get the current theme from the Weavy web site
+            weavyWebView.Theming += (sender, theme) =>
             {
-                Console.WriteLine("Got theme!");
+                Console.WriteLine("Got theme!", theme);
             };
 
-
-            // listen to signed in event
-            weavyWebView.SignedIn += (sender, args) =>
-            {
-                // check if successful login
-                if(args.Status == AuthenticationStatus.OK)
-                {
-                    Console.WriteLine("Signed in!", args.Status);
-                } else if(args.Status == AuthenticationStatus.NOTAUTHENTICATED || args.Status == AuthenticationStatus.ERROR)
-                {
-                    Console.WriteLine("Signing in failed!", args.Status, args.Message);
-                }                               
-            };
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using Weavy.WebView.Plugin.Forms.Models;
 using Xamarin.Essentials;
+using Xamarin.Forms.Sample.Helpers;
 
 namespace Xamarin.Forms.Sample.Views
 {
@@ -19,23 +20,35 @@ namespace Xamarin.Forms.Sample.Views
         {
             InitializeComponent();
 
+            // url to demo site
             var baseUrl = "https://mobiletest.weavycloud.com";
-            var demoToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTk5IiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJtYWdudXNAd2VhdnkuY29tIiwidXNlcm5hbWUiOiJta3JvbmEiLCJleHAiOiIxNTM0ODIwMjExMDAwIiwiaXNzIjoiTW9iaWxlVGVzdEFwcCJ9.3qU8CRXfLLvzdzhaj35mmJhQzBBkusAUWV1xKLEaG-I";
+            
+            // a persistent demo jwt token that works for the demo site above
+            var demoToken = AuthenticationHelpers.JwtToken;
 
+            // set the url for the different web views
             weavyWebView.Uri = $"{baseUrl}/e/apps/4";
             weavyWebView2.Uri = $"{baseUrl}/e/apps/1";
             weavyWebView3.Uri = $"{baseUrl}/e/apps/3";
 
+            // set the authentication token
             weavyWebView.AuthenticationToken = weavyWebView2.AuthenticationToken = weavyWebView3.AuthenticationToken = demoToken;
             
+            // load the web view after init is complete.
             weavyWebView.InitComplete += (sender, args) => { weavyWebView.Load(); };
             weavyWebView2.InitComplete += (sender, args) => { weavyWebView2.Load(); };
             weavyWebView3.InitComplete += (sender, args) => { weavyWebView3.Load(); };
 
+            // handle external link clicks in Weavy web view
             weavyWebView.LinkClicked += (sender, args) =>
             {
                 Launcher.OpenAsync(new Uri(args.Url));
             };
+
+
+            // -------------------------------------------------------------------------------------------
+            // example below shows how you can inject custom script and register a callback event.
+            // -------------------------------------------------------------------------------------------
 
             //weavyWebView.RegisterCallback("customCallback", (args) =>
             //{
@@ -44,15 +57,15 @@ namespace Xamarin.Forms.Sample.Views
 
             //weavyWebView.LoadFinished += (sender, args) =>
             //{
-//                weavyWebView.InjectJavaScript(@"
-//function myCustomFunc(value){
-//    Native('customCallback', value);
-//}
-//");
-//                weavyWebView.CallJsFunction("myCustomFunc", new { value = 123 });
+            //                weavyWebView.InjectJavaScript(@"
+            //function myCustomFunc(value){
+            //    Native('customCallback', value);
+            //}
+            //");
+            //                weavyWebView.CallJsFunction("myCustomFunc", new { value = 123 });
             //};
 
-            
+
         }
 
     }

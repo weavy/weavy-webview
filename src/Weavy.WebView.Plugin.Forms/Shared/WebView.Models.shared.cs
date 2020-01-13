@@ -13,15 +13,6 @@ namespace Weavy.WebView.Plugin.Forms.Models
     }
 
     /// <summary>
-    /// Sign in/out event args
-    /// </summary>
-    public class AuthenticationEventArgs : EventArgs
-    {
-        public AuthenticationStatus Status { get; set; }
-        public string Message { get; set; }
-    }
-
-    /// <summary>
     /// Theming event args
     /// </summary>
     public class ThemingEventArgs : EventArgs

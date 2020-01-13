@@ -18,14 +18,16 @@ namespace Xamarin.Forms.Sample.Views
         public EmbeddedPage()
         {
             InitializeComponent();
-            weavyWebView.Uri = "https://mobiletest.weavycloud.com/e/apps/4";
-            weavyWebView2.Uri = "https://mobiletest.weavycloud.com/e/apps/1";
-            weavyWebView3.Uri = "https://mobiletest.weavycloud.com/e/apps/3";
 
-            weavyWebView.AuthenticationToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTk5IiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJtYWdudXNAd2VhdnkuY29tIiwidXNlcm5hbWUiOiJta3JvbmEiLCJleHAiOiIxNTM0ODIwMjExMDAwIiwiaXNzIjoiTW9iaWxlVGVzdEFwcCJ9.3qU8CRXfLLvzdzhaj35mmJhQzBBkusAUWV1xKLEaG-I";
-            weavyWebView2.AuthenticationToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTk5IiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJtYWdudXNAd2VhdnkuY29tIiwidXNlcm5hbWUiOiJta3JvbmEiLCJleHAiOiIxNTM0ODIwMjExMDAwIiwiaXNzIjoiTW9iaWxlVGVzdEFwcCJ9.3qU8CRXfLLvzdzhaj35mmJhQzBBkusAUWV1xKLEaG-I";
-            weavyWebView3.AuthenticationToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTk5IiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJtYWdudXNAd2VhdnkuY29tIiwidXNlcm5hbWUiOiJta3JvbmEiLCJleHAiOiIxNTM0ODIwMjExMDAwIiwiaXNzIjoiTW9iaWxlVGVzdEFwcCJ9.3qU8CRXfLLvzdzhaj35mmJhQzBBkusAUWV1xKLEaG-I";
+            var baseUrl = "https://mobiletest.weavycloud.com";
+            var demoToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTk5IiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJtYWdudXNAd2VhdnkuY29tIiwidXNlcm5hbWUiOiJta3JvbmEiLCJleHAiOiIxNTM0ODIwMjExMDAwIiwiaXNzIjoiTW9iaWxlVGVzdEFwcCJ9.3qU8CRXfLLvzdzhaj35mmJhQzBBkusAUWV1xKLEaG-I";
 
+            weavyWebView.Uri = $"{baseUrl}/e/apps/4";
+            weavyWebView2.Uri = $"{baseUrl}/e/apps/1";
+            weavyWebView3.Uri = $"{baseUrl}/e/apps/3";
+
+            weavyWebView.AuthenticationToken = weavyWebView2.AuthenticationToken = weavyWebView3.AuthenticationToken = demoToken;
+            
             weavyWebView.InitComplete += (sender, args) => { weavyWebView.Load(); };
             weavyWebView2.InitComplete += (sender, args) => { weavyWebView2.Load(); };
             weavyWebView3.InitComplete += (sender, args) => { weavyWebView3.Load(); };
@@ -40,22 +42,18 @@ namespace Xamarin.Forms.Sample.Views
             //    DisplayAlert("My alert", $"The message from the web view is {args}", "Oki");
             //});
 
-            weavyWebView.LoadFinished += (sender, args) =>
-            {
+            //weavyWebView.LoadFinished += (sender, args) =>
+            //{
 //                weavyWebView.InjectJavaScript(@"
 //function myCustomFunc(value){
 //    Native('customCallback', value);
 //}
 //");
 //                weavyWebView.CallJsFunction("myCustomFunc", new { value = 123 });
-            };
+            //};
 
             
         }
 
-        private void BtnReload_Clicked(object sender, EventArgs e)
-        {
-            weavyWebView.Reload();
-        }
     }
 }

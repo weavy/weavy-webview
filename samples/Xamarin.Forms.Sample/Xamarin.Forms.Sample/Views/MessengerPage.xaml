@@ -22,12 +22,10 @@
     </ContentPage.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
+        <Grid.RowDefinitions>            
             <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Button x:Name="BtnReload" Text="Reload" Clicked="BtnReload_Clicked"></Button>
-        <w:WeavyWebView x:Name="weavyMessenger"  Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></w:WeavyWebView>
+        </Grid.RowDefinitions>        
+        <w:WeavyWebView x:Name="weavyMessenger" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></w:WeavyWebView>
         
     </Grid>
     

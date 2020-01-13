@@ -27,7 +27,7 @@
             <RowDefinition Height="200" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <!--<Button x:Name="BtnReload" Text="Reload" Clicked="BtnReload_Clicked"></Button>-->
+        
         <w:WeavyWebView x:Name="weavyWebView"  Grid.Row="0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20"></w:WeavyWebView>
         <w:WeavyWebView x:Name="weavyWebView2"  Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20"></w:WeavyWebView>
         <w:WeavyWebView x:Name="weavyWebView3"  Grid.Row="2" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20"></w:WeavyWebView>

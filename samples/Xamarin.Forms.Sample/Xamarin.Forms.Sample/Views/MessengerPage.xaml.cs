@@ -21,9 +21,5 @@ namespace Xamarin.Forms.Sample.Views
             };
         }
 
-        private void BtnReload_Clicked(object sender, EventArgs e)
-        {
-            weavyMessenger.Reload();
-        }
     }
 }

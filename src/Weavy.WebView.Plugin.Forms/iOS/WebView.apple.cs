@@ -21,6 +21,7 @@ namespace Weavy.WebView.Plugin.Forms.iOS
     {
         private const string NativeFuncCall = "window.webkit.messageHandlers.native.postMessage";
         private const string NativeFunction = "function Native(action, data){window.webkit.messageHandlers.native.postMessage(JSON.stringify({ a: action, d: data }));}";
+        private bool shouldReload = false;
 
         WKUserContentController userController;
 
@@ -96,7 +97,7 @@ namespace Weavy.WebView.Plugin.Forms.iOS
         /// Request to load an uri
         /// </summary>
         /// <param name="completion"></param>
-        private void Request(Action completion)
+        private void Request(Action<bool> completion)
         {
             if (!string.IsNullOrEmpty(Element.AuthenticationToken))
             {
@@ -134,7 +135,7 @@ namespace Weavy.WebView.Plugin.Forms.iOS
                     {
                         cookieStore.SetCookie(c, () =>
                         {                            
-                            completion();
+                            completion(true);
                             return;
                             
                         });
@@ -142,12 +143,12 @@ namespace Weavy.WebView.Plugin.Forms.iOS
                 }
                 else
                 {
-                    completion();
+                    completion(false);
                 }
             }
             else
             {
-                completion();
+                completion(false);
             }
         }
 
@@ -155,9 +156,10 @@ namespace Weavy.WebView.Plugin.Forms.iOS
         /// <summary>
         /// Load uri 
         /// </summary>
-        private void LoadRequestComplete()
+        private void LoadRequestComplete(bool reload)
         {
-            Control.LoadRequest(new NSUrlRequest(new NSUrl(new Uri(Element.Uri).AbsoluteUri)));
+            shouldReload = reload;
+            Control.LoadRequest(new NSUrlRequest(new NSUrl(new Uri(Element.Uri).AbsoluteUri)));            
         }
 
         /// <summary>
@@ -207,6 +209,13 @@ namespace Weavy.WebView.Plugin.Forms.iOS
             var element = Element as WeavyWebView;
 
             if (element == null) return;
+
+            // due to inconsistency when setting the cookies in the wk web view, a reload is performed when the cookies has been set. Until better solution is in place, this is the work-around.
+            if (shouldReload)
+            {
+                shouldReload = false;
+                Control.Reload();
+            }
 
             // inject scripts
             Inject(NativeFunction);

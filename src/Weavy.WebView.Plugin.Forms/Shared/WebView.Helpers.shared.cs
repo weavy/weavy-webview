@@ -13,7 +13,7 @@
 /* Reconnect to weavy rtm or reload page      */
 /********************************************/
 try{  
-    wvy.connection.connect();  
+    /* wvy.connection.connect();  */
 } catch(e){}
 ";
         /// <summary>
@@ -31,9 +31,16 @@ try{
         /// Scripts injected in the web page
         /// </summary>
         public static string Scripts = @"
+
 if(typeof weavyAppScripts === 'undefined') {
 
     var weavyAppScripts = weavyAppScripts || {};
+
+    weavyAppScripts.ready = (function(){    
+        document.addEventListener('turbolinks:load', function (e) { 
+            Native('readyCallback', true);
+        });
+    })();
 
 
     weavyAppScripts.user = (function(){    
@@ -77,17 +84,30 @@ if(typeof weavyAppScripts === 'undefined') {
     weavyAppScripts.badge = (function(){    
         wvy.connection.on('badge.weavy', function(e, data){
             Native('badgeCallback', data);
-        });
-
-        var check = function(){
+        }); 
         
-            $.ajax('/a/conversations/unread?followed=true').then(function(response){
-                var count = response.data != null ? response.data.length : 0;
-                   
-                Native('badgeCallback', {conversations: count, notifications: 0});
-            });        
+        var check = function(){
+
+            var checkNotifications = $.ajax('/a/notifications/unread');
+            var checkConversations = $.ajax('/a/conversations/unread?followed=true');      
+            var conversationCount = 0;
+            var notificationCount = 0;
+        
+            $.when(checkNotifications, checkConversations).then(function(p1, p2){
+                if(p1){
+                    var response = p1[0];
+                    notificationCount = response.data != null ? response.data.length : 0;                                   
+                }
+
+                if(p2){
+                    var response = p2[0];
+                    conversationCount = response.data != null ? response.data.length : 0;                                                   
+                }
+
+                Native('badgeCallback', {conversations: conversationCount, notifications: notificationCount});
+            })
         };
-    
+
         check();
 
         return {
@@ -138,8 +158,11 @@ if(typeof weavyAppScripts === 'undefined') {
     /* Handle external links                    */
     /********************************************/
     weavyAppScripts.links = (function(){    
+
         function handle(){
+
            $(document).on('click', 'a[href^=http]', function (e) {
+
 	            var url = $(this).attr('href');
                 var target = $(this).attr('target');
 
@@ -150,6 +173,7 @@ if(typeof weavyAppScripts === 'undefined') {
             });
 
             $(document).on('click', 'a[href^=ms-]', function (e) {
+
 	            e.preventDefault();		
                 var url = $(this).attr('href');
                 Native('linkCallback', { url: url });	
@@ -158,7 +182,6 @@ if(typeof weavyAppScripts === 'undefined') {
 
         handle();
     })();
-
 
 
 }

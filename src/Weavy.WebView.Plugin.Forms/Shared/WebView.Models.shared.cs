@@ -74,5 +74,7 @@ namespace Weavy.WebView.Plugin.Forms.Models
         public int Id { get; set; }
         public Guid Guid { get; set; }
         public string FullName { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
     }
 }

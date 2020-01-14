@@ -223,6 +223,14 @@ namespace Weavy.WebView.Plugin.Forms
         }
 
         /// <summary>
+        /// Resume web view. Updates badge and connectin state
+        /// </summary>
+        public void Resume()
+        {
+            InjectJavaScript(ScriptHelper.UpdateBadgeScript);
+        }
+
+        /// <summary>
         /// Inject a script snippet into the Weavy Web View that will be executed.
         /// </summary>
         /// <param name="script"></param>
@@ -432,8 +440,8 @@ namespace Weavy.WebView.Plugin.Forms
             }
         }
         private void RegisterCallbacks()
-        {
-                        
+        { 
+
             //Callback from sign out script
             RegisterCallback("signOutCallback", (args) =>
             {
@@ -461,6 +469,13 @@ namespace Weavy.WebView.Plugin.Forms
                 //notify about link clicked                
                 var linkArgs = JsonConvert.DeserializeObject<LinkEventArgs>(args);
                 OnLinkClicked(this, linkArgs);
+            });
+
+            //Callback when page is readt
+            RegisterCallback("readyCallback", (args) =>
+            {
+                //notify about page ready                                
+                OnLoadFinished(this, EventArgs.Empty);
             });
 
         }

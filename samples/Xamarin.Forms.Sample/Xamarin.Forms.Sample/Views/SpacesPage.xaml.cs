@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using Weavy.WebView.Plugin.Forms.Models;
+using Xamarin.Essentials;
 using Xamarin.Forms.Sample.Helpers;
 
 namespace Xamarin.Forms.Sample.Views
@@ -41,6 +42,13 @@ namespace Xamarin.Forms.Sample.Views
                 Console.WriteLine("Loading webview...");
             };
 
+            // web view is loading page
+            weavyWebView.LinkClicked += (sender, args) =>
+            {
+                Console.WriteLine("Link clicked...", args.Url);
+                Launcher.OpenAsync(args.Url);
+            };
+
             // web view has finished loading page
             weavyWebView.LoadFinished += (sender, args) =>
             {
@@ -63,6 +71,10 @@ namespace Xamarin.Forms.Sample.Views
             {
                 Console.WriteLine("Got theme!", theme);
             };
+
+            MessagingCenter.Subscribe<App>(this, "APP_RESUME", (s) => {
+                weavyWebView.Resume();
+            });
 
         }
     }

@@ -24,7 +24,7 @@
     <Grid>
         <Grid.RowDefinitions>            
             <RowDefinition Height="*" />
-        </Grid.RowDefinitions>        
+        </Grid.RowDefinitions>
         <w:WeavyWebView x:Name="weavyWebView" Grid.Row="0" Uri="https://mobiletest.weavycloud.com" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></w:WeavyWebView>
         
     </Grid>

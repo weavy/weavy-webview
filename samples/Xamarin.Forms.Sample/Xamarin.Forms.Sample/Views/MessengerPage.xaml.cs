@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
+using Weavy.WebView.Plugin.Forms.Models;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Sample.Helpers;
 using Xamarin.Forms.Xaml;
@@ -22,6 +25,23 @@ namespace Xamarin.Forms.Sample.Views
             weavyMessenger.InitCompleted += (sender, args) =>
             {
                 weavyMessenger.Load("https://mobiletest.weavycloud.com/messenger");
+            };
+
+            weavyMessenger.LinkClicked += (sender, args) =>
+            {
+                Console.WriteLine("Link clicked...", args.Url);
+                Launcher.OpenAsync(args.Url);
+            };
+
+            // web view has finished loading page
+            weavyMessenger.LoadFinished += (sender, args) =>
+            {
+                Console.WriteLine("Load webview finished...");
+
+                // exampleof getting current logged in user
+                weavyMessenger.GetUser((data) => {
+                    var user = JsonConvert.DeserializeObject<User>(data);
+                });
             };
         }
 

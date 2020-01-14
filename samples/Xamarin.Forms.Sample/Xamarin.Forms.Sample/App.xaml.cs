@@ -29,6 +29,7 @@ namespace Xamarin.Forms.Sample
         protected override void OnResume()
         {
             // Handle when your app resumes
+            MessagingCenter.Send<App>(this, "APP_RESUME");
         }
     }
 }

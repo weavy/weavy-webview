@@ -10,7 +10,7 @@ Weavy.WebView.Plugin.Forms is available via NuGet:
 
 ## Quick start
 
-```
+```xml
 xmlns:w="clr-namespace:Weavy.WebView.Plugin.Forms;assembly=Weavy.WebView.Plugin.Forms"
 
 ...
@@ -25,14 +25,14 @@ xmlns:w="clr-namespace:Weavy.WebView.Plugin.Forms;assembly=Weavy.WebView.Plugin.
 Figure 1. *Adding a Weavy WebView in a .xaml view*
 
 
-```
+```C#
 var weavyWebView = new WeavyWebView{
     Uri = "https://myweavy.weavycloud.com"
 };
 ```
 Figure 2. *Adding a Weavy WebView in code*
 
-```
+```C#
 weavyWebView.InitCompleted += (s, a) => { 
     weavyWebView.Load(); 
 };
@@ -79,7 +79,7 @@ If you are using this plugin in an existing app you have most certainly already 
 
 When you have generated the JWT according to the specs in the Docs, you can pass this to a Weavy WebView and the user will automatically be signed in.
 
-```
+```C#
 var weavyWebView = new WeavyWebView{
     Uri = "https://myweavy.weavycloud.com/e/apps/10",
     AuthenticationToken = myGeneratedJWT
@@ -90,7 +90,7 @@ weavyWebView.InitCompleted += (s, a) => { weavyWebView.Load(); };
 Figure 4. *Add a Weavy WebView with an AuthenticationToken.*
 
 ## Example
-```
+```C#
 public class MyPage: ContentPage {
 
     public MyPage(){

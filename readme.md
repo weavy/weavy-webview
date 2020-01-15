@@ -43,7 +43,7 @@ Figure 3. *Load the initial request when the WebView is initiated*
 | Property | Description |
 |----------|-------------|
 |`Uri` | The uri that the WebView should display|
-| `AuthenticationToken` | A JWT authentication token to enable SSO. For more information, please check out the [Weavy Docs](docs.weavy.com/sdk/server/authentication/external#the-json-web-token-(jwt)) |
+| `AuthenticationToken` | A JWT authentication token to enable SSO. For more information, please check out the [Weavy Docs](https://docs.weavy.com/sdk/server/authentication/external#the-json-web-token-(jwt)) |
 | `CanGoBack`  |If the WebView can go back in history  |
 | `CanGoForward` | If the WebView can go forward in history |
 
@@ -75,7 +75,7 @@ Figure 3. *Load the initial request when the WebView is initiated*
 
 ## Using SSO
 
-If you are using this plugin in an existing app you have most certainly already an authentication flow for the users. Weavy uses JWT to enable a SSO flow between the host app and the Weavy integration. You can read more about how JWT works with Weavy in the [Weavy Docs](docs.weavy.com/sdk/server/authentication/external#the-json-web-token-(jwt)). 
+If you are using this plugin in an existing app you have most certainly already an authentication flow for the users. Weavy uses JWT to enable a SSO flow between the host app and the Weavy integration. You can read more about how JWT works with Weavy in the [Weavy Docs](https://docs.weavy.com/sdk/server/authentication/external#the-json-web-token-(jwt)). 
 
 When you have generated the JWT according to the specs in the Docs, you can pass this to a Weavy WebView and the user will automatically be signed in.
 

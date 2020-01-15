@@ -42,7 +42,7 @@ namespace Xamarin.Forms.Sample.Views
                 Console.WriteLine("Loading webview...");
             };
 
-            // web view is loading page
+            // an external link was clicked in the web view
             weavyWebView.LinkClicked += (sender, args) =>
             {
                 Console.WriteLine("Link clicked...", args.Url);
@@ -54,7 +54,7 @@ namespace Xamarin.Forms.Sample.Views
             {
                 Console.WriteLine("Load webview finished...");
 
-                // exampleof getting current logged in user
+                // example of getting current logged in user
                 weavyWebView.GetUser((data) => {
                     var user = JsonConvert.DeserializeObject<User>(data);                    
                 });

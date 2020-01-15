@@ -89,6 +89,52 @@ weavyWebView.InitCompleted += (s, a) => { weavyWebView.Load(); };
 ```
 Figure 4. *Add a Weavy WebView with an AuthenticationToken.*
 
+## Example
+```
+public class MyPage: ContentPage {
+
+    public MyPage(){
+        
+        // create new WebView
+        var weavyWebView = new WeavyWebView{
+            Uri = "https://myweavy.weavycloud.com/e/apps/10",
+            AuthenticationToken = myGeneratedJWT
+        };
+
+        // make sure to init webview before doing the Load
+        weavyWebView.InitCompleted += (s, a) => { weavyWebView.Load(); };
+
+        // web view has finished loading page
+        weavyWebView.LoadFinished += (sender, args) =>
+        {
+            // example of getting current logged in user
+            weavyWebView.GetUser((jsonData) => {
+                var user = JsonConvert.DeserializeObject<User>(jsonData);                    
+            });
+        };
+
+        // an external link was clicked in the web view
+        weavyWebView.LinkClicked += (sender, linkArgs) =>
+        {  
+            // open link in mobile browser
+            Launcher.OpenAsync(linkArgs.Url);
+        };
+
+        // listen to badge updated event
+        weavyWebView.BadgeUpdated += (sender, args) =>
+        {
+            var unreadConversations = args.Conversations;
+            var unreadNotifications = args.Notifications;
+
+            // update app badge or do something else with the badge data...
+        };
+
+    }
+
+}
+```
+
+
 ## Sample app
 
 A sample app is included which shows the most common usages of the Weavy WebView. 

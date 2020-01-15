@@ -95,10 +95,10 @@ public class MyPage: ContentPage {
 
     public MyPage(){
         
-        // create new WebView
+        // create new WebView and generate a new JWT token (See section Using SSO above)
         var weavyWebView = new WeavyWebView{
             Uri = "https://myweavy.weavycloud.com/e/apps/10",
-            AuthenticationToken = myGeneratedJWT
+            AuthenticationToken = GenerateJWT() 
         };
 
         // make sure to init webview before doing the Load
@@ -121,10 +121,10 @@ public class MyPage: ContentPage {
         };
 
         // listen to badge updated event
-        weavyWebView.BadgeUpdated += (sender, args) =>
+        weavyWebView.BadgeUpdated += (sender, badgeArgs) =>
         {
-            var unreadConversations = args.Conversations;
-            var unreadNotifications = args.Notifications;
+            var unreadConversations = badgeArgs.Conversations;
+            var unreadNotifications = badgeArgs.Notifications;
 
             // update app badge or do something else with the badge data...
         };

@@ -217,7 +217,7 @@ namespace Weavy.WebView.Plugin.Forms
         /// Get the current user
         /// </summary>
         public void GetUser(Action<string> callback)
-        {
+        {            
             RegisterCallback("userCallback", callback);
             CallJsFunction("weavyAppScripts.user.get");
         }

@@ -1,4 +1,5 @@
 ﻿using Android.Content;
+using Android.OS;
 using Android.Webkit;
 using System;
 using System.Text;
@@ -22,6 +23,7 @@ namespace Weavy.WebView.Plugin.Forms.Droid
         WeavyWebChromeClient _webChromeClient;
         protected internal WeavyWebView ElementController => Element;
         bool _isDisposed = false;
+        bool scriptsInjected = false;
 
         public static Func<WeavyWebViewRenderer, WeavyWebViewClient> GetWebViewClientDelegate;
         
@@ -67,8 +69,7 @@ namespace Weavy.WebView.Plugin.Forms.Droid
                 var newElementController = e.NewElement as WeavyWebView;
 
                 Control.AddJavascriptInterface(new JSBridge(this), "jsBridge");
-                //Control.LoadUrl(Element.Uri);
-
+                
                 // handle load requests
                 newElementController.LoadRequested += OnLoadRequested;
 
@@ -89,7 +90,7 @@ namespace Weavy.WebView.Plugin.Forms.Droid
         }
 
         void OnLoadRequested(object sender, EventArgs args)
-        {
+        {            
             LoadRequest();
         }
 
@@ -127,6 +128,8 @@ namespace Weavy.WebView.Plugin.Forms.Droid
         private void LoadRequest()
         {
             if (Element == null) return;
+            
+            scriptsInjected = false;
 
             var cookieManager = CookieManager.Instance;
             cookieManager.SetAcceptCookie(true);
@@ -226,8 +229,13 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             var hybridWebView = Element as WeavyWebView;
             if (hybridWebView == null) return;
 
-            InjectJS(NativeFunction);
-            InjectJS(GetFuncScript());
+            if (!scriptsInjected)
+            {
+                InjectJS(NativeFunction);
+                InjectJS(GetFuncScript());
+                scriptsInjected = true;
+            }
+            
             hybridWebView.OnLoadFinished(this, EventArgs.Empty);
             hybridWebView.CanGoBack = Control.CanGoBack();
             hybridWebView.CanGoForward = Control.CanGoForward();
@@ -245,7 +253,11 @@ namespace Weavy.WebView.Plugin.Forms.Droid
         {
             if (Control != null)
             {
-                Control.LoadUrl(string.Format("javascript: {0}", script));
+                using (var h = new Handler(Context.MainLooper))
+                {
+                    h.Post(() => { Control.LoadUrl(string.Format("javascript: {0}", script)); });
+                };
+                
             }
         }
 

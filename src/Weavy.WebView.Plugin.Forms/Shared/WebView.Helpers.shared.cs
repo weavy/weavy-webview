@@ -4,7 +4,18 @@
     /// Client script helper
     /// </summary>
     public static class ScriptHelper
-    {        
+    {
+        /// <summary>
+        /// Script for checking if base script exists
+        /// </summary>
+        public static string ScriptChecker = @"
+/********************************************/
+/* Check if script already injected (Droid) */
+/********************************************/
+if(typeof weavyAppScripts === 'undefined') {
+    Native('injectScriptCallback', true);
+}
+";
         /// <summary>
         /// Connect to real time hub. Useful when the app has been inactive for a while and the real time hub is disconnected.
         /// </summary>

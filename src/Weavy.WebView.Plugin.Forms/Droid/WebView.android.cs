@@ -45,6 +45,7 @@ namespace Weavy.WebView.Plugin.Forms.Droid
                 webView.Settings.DomStorageEnabled = true;
                 webView.LayoutParameters = new Android.Widget.LinearLayout.LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent);
                 webView.Settings.SetRenderPriority(WebSettings.RenderPriority.High);
+                
 
                 _webViewClient = GetWebViewClient();
                 webView.SetWebViewClient(_webViewClient);
@@ -53,7 +54,10 @@ namespace Weavy.WebView.Plugin.Forms.Droid
                 _webChromeClient.SetContext(Context);
                 webView.SetWebChromeClient(_webChromeClient);
 
-                CookieManager.Instance.SetAcceptThirdPartyCookies(webView, true);
+                var cookieManager = CookieManager.Instance;
+                cookieManager.SetAcceptCookie(true);
+                cookieManager.SetAcceptThirdPartyCookies(webView, true);
+
                 SetNativeControl(webView);
             }
 
@@ -131,18 +135,22 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             
             scriptsInjected = false;
 
-            var cookieManager = CookieManager.Instance;
-            cookieManager.SetAcceptCookie(true);
-            cookieManager.SetAcceptThirdPartyCookies(Control, true);
-            cookieManager.RemoveAllCookie();
+            var cookieManager = CookieManager.Instance;            
             var cookies = ElementController.Cookies.GetCookies(new System.Uri(ElementController.BaseUrl));
-            for (var i = 0; i < cookies.Count; i++)
+            if(cookies.Count > 0)
             {
-                string cookieValue = cookies[i].Value;
-                string cookieDomain = cookies[i].Domain;
-                string cookieName = cookies[i].Name;
-                cookieManager.SetCookie(cookieDomain, cookieName + "=" + cookieValue);
+                // remove current cookies before updating
+                cookieManager.RemoveAllCookie();
+
+                for (var i = 0; i < cookies.Count; i++)
+                {
+                    string cookieValue = cookies[i].Value;
+                    string cookieDomain = cookies[i].Domain;
+                    string cookieName = cookies[i].Name;
+                    cookieManager.SetCookie(cookieDomain, cookieName + "=" + cookieValue);
+                }
             }
+            
 
             Control.LoadUrl(Element.Uri);
         }

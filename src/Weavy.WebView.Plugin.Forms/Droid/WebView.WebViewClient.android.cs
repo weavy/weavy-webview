@@ -27,6 +27,8 @@ namespace Weavy.WebView.Plugin.Forms.Droid
         {
             base.OnPageFinished(view, url);
 
+            CookieManager.Instance.Flush();
+
             WeavyWebViewRenderer hybrid;
             if (this.WebHybrid != null && this.WebHybrid.TryGetTarget(out hybrid))
             {

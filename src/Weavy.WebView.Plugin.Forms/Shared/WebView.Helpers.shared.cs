@@ -134,8 +134,6 @@ if(typeof weavyAppScripts === 'undefined') {
         function set(){
             $.ajax('/a/theme').then(function(response){
                 Native('themeCallback', response);
-            }).fail(function(e){
-                Native('themeCallback', {});
             });
         }
 

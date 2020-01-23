@@ -227,6 +227,7 @@ namespace Weavy.WebView.Plugin.Forms
         /// </summary>
         public void Resume()
         {
+            InjectJavaScript(ScriptHelper.ConnectScript);
             InjectJavaScript(ScriptHelper.UpdateBadgeScript);
         }
 

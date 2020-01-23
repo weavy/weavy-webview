@@ -24,7 +24,7 @@ if(typeof weavyAppScripts === 'undefined') {
 /* Reconnect to weavy rtm or reload page      */
 /********************************************/
 try{  
-    /* wvy.connection.connect();  */
+     wvy.connection.default.connect();  
 } catch(e){}
 ";
         /// <summary>

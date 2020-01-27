@@ -12,11 +12,6 @@ using System.Net;
 
 namespace Weavy.WebView.Plugin.Forms
 {
-    public static class WeavyWebViewConfiguration
-    {
-        public static string AuthenticationToken { get; set; }
-    }
-
     public class WeavyWebView : View
     {
         #region event handlers

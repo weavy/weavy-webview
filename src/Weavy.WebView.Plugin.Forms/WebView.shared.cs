@@ -416,7 +416,7 @@ namespace Weavy.WebView.Plugin.Forms
                 BaseAddress = baseUrl
             };
             var content = new StringContent($"{{jwt: '{token}' }}", Encoding.UTF8, "application/json");
-            var result = client.PostAsync("/sign-in-token", content).Result;
+            var result = client.PostAsync("/client/sign-in", content).Result;
 
             // get cookies 
             IEnumerable<Cookie> responseCookies = CookieJar.GetCookies(baseUrl).Cast<Cookie>();

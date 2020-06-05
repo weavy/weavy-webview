@@ -99,10 +99,14 @@ namespace Weavy.WebView.Plugin.Forms.iOS
         /// <param name="completion"></param>
         private void Request(Action<bool> completion)
         {
-            if (!string.IsNullOrEmpty(Element.AuthenticationToken))
+            var element = Element as WeavyWebView;
+
+            if (element == null) return;
+
+            if (!string.IsNullOrEmpty(element.AuthenticationToken))
             {
 
-                var uri = new Uri(Element.BaseUrl);
+                var uri = new Uri(element.BaseUrl);
                 string domain = uri.Host;
 
                 // Set cookies here
@@ -116,7 +120,7 @@ namespace Weavy.WebView.Plugin.Forms.iOS
                 }
 
                 //set up the new cookies
-                var jCookies = Element.Cookies.GetCookies(uri);
+                var jCookies = element.Cookies.GetCookies(uri);
                 IList<NSHttpCookie> eCookies =
                     (from object jCookie in jCookies
                      where jCookie != null
@@ -158,8 +162,12 @@ namespace Weavy.WebView.Plugin.Forms.iOS
         /// </summary>
         private void LoadRequestComplete(bool reload)
         {
+            var element = Element as WeavyWebView;
+
+            if (element == null) return;
+
             shouldReload = reload;
-            Control.LoadRequest(new NSUrlRequest(new NSUrl(new Uri(Element.Uri).AbsoluteUri)));            
+            Control.LoadRequest(new NSUrlRequest(new NSUrl(new Uri(element.Uri).AbsoluteUri)));            
         }
 
         /// <summary>

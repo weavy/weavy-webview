@@ -23,7 +23,7 @@ namespace Weavy.WebView.Plugin.Forms.Droid
         WeavyWebChromeClient _webChromeClient;
         protected internal WeavyWebView ElementController => Element;
         bool _isDisposed = false;
-        bool scriptsInjected = false;
+        //bool scriptsInjected = false;
 
         public static Func<WeavyWebViewRenderer, WeavyWebViewClient> GetWebViewClientDelegate;
         
@@ -43,11 +43,13 @@ namespace Weavy.WebView.Plugin.Forms.Droid
                 var webView = new Android.Webkit.WebView(_context);
                 webView.Settings.JavaScriptEnabled = true;
                 webView.Settings.DomStorageEnabled = true;
+                Android.Webkit.WebView.SetWebContentsDebuggingEnabled(true);
+
                 webView.LayoutParameters = new Android.Widget.LinearLayout.LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent);
                 webView.Settings.SetRenderPriority(WebSettings.RenderPriority.High);
                 
 
-                _webViewClient = GetWebViewClient();
+                _webViewClient = GetWebViewClient();                
                 webView.SetWebViewClient(_webViewClient);
                 
                 _webChromeClient = new WeavyWebChromeClient();
@@ -133,7 +135,7 @@ namespace Weavy.WebView.Plugin.Forms.Droid
         {
             if (Element == null) return;
             
-            scriptsInjected = false;
+            //scriptsInjected = false;
 
             var cookieManager = CookieManager.Instance;            
             var cookies = ElementController.Cookies.GetCookies(new System.Uri(ElementController.BaseUrl));
@@ -237,12 +239,12 @@ namespace Weavy.WebView.Plugin.Forms.Droid
             var hybridWebView = Element as WeavyWebView;
             if (hybridWebView == null) return;
 
-            if (!scriptsInjected)
-            {
+            //if (!scriptsInjected)
+            //{
                 InjectJS(NativeFunction);
                 InjectJS(GetFuncScript());
-                scriptsInjected = true;
-            }
+            //    scriptsInjected = true;
+            //}
             
             hybridWebView.OnLoadFinished(this, EventArgs.Empty);
             hybridWebView.CanGoBack = Control.CanGoBack();

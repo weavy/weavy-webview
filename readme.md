@@ -43,7 +43,7 @@ Figure 3. *Load the initial request when the WebView is initiated*
 | Property | Description |
 |----------|-------------|
 |`Uri` | The uri that the WebView should display|
-| `AuthenticationToken` | A JWT authentication token to enable SSO. For more information, please check out the [Weavy Docs](https://docs.weavy.com/sdk/server/authentication/external#the-json-web-token-(jwt)) |
+| `AuthenticationToken` | A JWT authentication token to enable SSO. For more information, please check out the [Weavy Docs](https://www.weavy.com/docs/v8/client/authentication) |
 | `CanGoBack`  |If the WebView can go back in history  |
 | `CanGoForward` | If the WebView can go forward in history |
 

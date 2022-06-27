@@ -75,7 +75,7 @@ Figure 3. *Load the initial request when the WebView is initiated*
 
 ## Using SSO
 
-If you are using this plugin in an existing app you have most certainly already an authentication flow for the users. Weavy uses JWT to enable a SSO flow between the host app and the Weavy integration. You can read more about how JWT works with Weavy in the [Weavy Docs](https://docs.weavy.com/sdk/server/authentication/external#the-json-web-token-(jwt)). 
+If you are using this plugin in an existing app you have most certainly already an authentication flow for the users. Weavy uses JWT to enable a SSO flow between the host app and the Weavy integration. You can read more about how JWT works with Weavy in the [Weavy Docs](https://www.weavy.com/docs/v8/client/authentication). 
 
 When you have generated the JWT according to the specs in the Docs, you can pass this to a Weavy WebView and the user will automatically be signed in.
 
